@@ -1,0 +1,59 @@
+buildscript {
+    ext {
+        springBootVersion = '3.0.2'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+ext {
+    set('springBootVersion', "2.3.1.RELEASE")
+}
+
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+    apply plugin: 'eclipse-wtp'
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+        flatDir {
+            dirs 'lib'
+        }
+    }
+    group = 'com.manapi'
+    version = '0.0.1'
+
+    apply plugin: 'java'
+    sourceCompatibility = 1.17 // sourceCompatibility should be applied after java plugin
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    apply from: "$rootProject.projectDir/gradle/plugins/projectDependencyReport.gradle"
+    apply from: "$rootProject.projectDir/gradle/plugins/publish/mavenPublish.gradle"
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+        }
+    }
+
+    configurations {
+        providedRuntime
+    }
+
+    dependencies {
+        testCompile("org.springframework.boot:spring-boot-starter-test")
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
