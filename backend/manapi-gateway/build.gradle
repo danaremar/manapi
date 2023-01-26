@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.manapi'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 configurations {
 	compileOnly {
@@ -29,13 +29,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web-services'
 	implementation 'org.springframework.session:spring-session-jdbc'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
-	implementation 'org.modelmapper:modelmapper:3.1.0'
-	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'org.modelmapper:modelmapper:3.1.1'
+	implementation 'io.jsonwebtoken:jjwt:0.11.5'
 	implementation 'org.apache.commons:commons-lang3:3.0'
 	implementation 'com.google.guava:guava:31.1-jre'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.h2database:h2:2.1.210'
+	runtimeOnly 'com.h2database:h2:2.1.214'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
