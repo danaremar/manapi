@@ -19,6 +19,7 @@ import com.manapi.manapigateway.repository.UserRepository;
 @Service
 public class UserService {
 	
+	@Autowired
 	private UserRepository userRepository;
 	
 	@Lazy

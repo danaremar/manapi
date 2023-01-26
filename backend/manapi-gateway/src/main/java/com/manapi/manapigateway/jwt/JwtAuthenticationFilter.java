@@ -18,7 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	
-	private final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+	private final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
 	@Autowired
 	private JwtService jwtService;
@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
 		} catch (Exception e) {
-			logger.error("doInternalFilter() - Failed JWT request");
+			log.error("doInternalFilter() - Failed JWT request");
 		}
 
 		filterChain.doFilter(request, response);

@@ -19,7 +19,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -80,18 +79,15 @@ public class User implements UserDetails {
 	@JsonIgnore
 	@PastOrPresent
 	@Column(nullable = false)
-	@DateTimeFormat(pattern = "HH:mm:ss dd/MM/yyyy 'GMT'")
 	private Date creationDate;
 
 	@JsonIgnore
 	@PastOrPresent
 	@Column(name = "delete_date")
-	@DateTimeFormat(pattern = "HH:mm:ss dd/MM/yyyy 'GMT'")
 	private Date deleteDate;
 
 	@PastOrPresent
 	@Column(nullable = false)
-	@DateTimeFormat(pattern = "HH:mm:ss dd/MM/yyyy 'GMT'")
 	private Date lastConnection;
 	
 	@JsonIgnore
@@ -106,15 +102,16 @@ public class User implements UserDetails {
 	
 	@Column
 	@PastOrPresent
-	@DateTimeFormat(pattern = "HH:mm:ss dd/MM/yyyy 'GMT'")
 	private Date startPlan;
 	
 	@Column
-	@DateTimeFormat(pattern = "HH:mm:ss dd/MM/yyyy 'GMT'")
 	private Date endPlan;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
+		if(plan==null) {
+			return List.of(new SimpleGrantedAuthority(Plan.FREE.name()));
+		}
 		return List.of(new SimpleGrantedAuthority(plan.name()));
 	}
 
