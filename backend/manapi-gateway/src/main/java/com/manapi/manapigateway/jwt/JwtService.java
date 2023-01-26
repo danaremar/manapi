@@ -1,5 +1,6 @@
 package com.manapi.manapigateway.jwt;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -17,15 +18,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Service
+@Component
 public class JwtService {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
-	@Value("${jwt.secret}")
+	@Value("${manapi.security.jwt.secret}")
 	private String secret;
 
-	@Value("${jwt.expiration}")
+	@Value("${manapi.security.jwt.expiration}")
 	private Long expiration;
 
 	public String getUsernameFromToken(String token) {
@@ -37,10 +38,13 @@ public class JwtService {
 	}
 
 	public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-		return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
+		return Jwts.builder()
+				.setClaims(extraClaims)
+				.setSubject(userDetails.getUsername())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * expiration))
-				.signWith(SignatureAlgorithm.HS512, secret).compact();
+				.signWith(SignatureAlgorithm.HS512, secret)
+				.compact();
 	}
 
 	public boolean valitateToken(String token) {

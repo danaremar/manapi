@@ -10,12 +10,12 @@
     "description": "Enable XSS protection"
   },
   {
-    "name": "jwt.secret",
+    "name": "manapi.security.jwt.secret",
     "type": "java.lang.String",
     "description": "Password to cipher"
   },
   {
-    "name": "jwt.expiration",
+    "name": "manapi.security.jwt.expiration",
     "type": "java.lang.Long",
     "description": "Hours to expire"
   },
