@@ -14,28 +14,30 @@ public class ManapiGatewayApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ManapiGatewayApplication.class, args);
 	}
-	
-	@Value("${iman.resource.images}")
+
+	@Value("${manapi.resource.images}")
 	private String imageUrl;
-	
+
+	@Value("${manapi.frontend.url}")
+	private String frontEndUrl;
+
 	@Bean
 	public WebMvcConfigurer configurer() {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addResourceHandlers(ResourceHandlerRegistry registry) {
 				registry.addResourceHandler("/images/**")
-					.addResourceLocations("file:" + imageUrl);
-	        		//.addResourceLocations("file:///D:/images/");
+						.addResourceLocations("file:" + imageUrl);
 			}
+
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-				
+
 						// WEB RESTRICTED
-						.allowedOrigins("http://localhost:4200", "http://localhost:8080", "https://danaremar.github.io", "https://web-danaremar.cloud.okteto.net");
-				
-						// VISIBLE FOR ALL
-						// .allowedOrigins("*");
+						.allowedOrigins("http://localhost:4200", "http://localhost:8080", "https://danaremar.github.io",
+								"https://web-danaremar.cloud.okteto.net");
+
 			}
 		};
 	}
