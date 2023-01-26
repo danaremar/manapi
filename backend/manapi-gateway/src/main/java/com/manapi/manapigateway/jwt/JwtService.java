@@ -40,7 +40,7 @@ public class JwtService {
 		return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * expiration))
-				.signWith(SignatureAlgorithm.HS256, secret).compact();
+				.signWith(SignatureAlgorithm.HS512, secret).compact();
 	}
 
 	public boolean valitateToken(String token) {
