@@ -27,6 +27,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.manapi.manapigateway.model.projects.ProjectRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -112,6 +113,9 @@ public class User implements UserDetails {
 
 	@OneToMany(fetch = FetchType.LAZY)
 	private transient List<Subscription> subscriptions;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	private transient List<ProjectRole> projectRoles;
 
 	/**
 	 * Returns subscriptions plans
