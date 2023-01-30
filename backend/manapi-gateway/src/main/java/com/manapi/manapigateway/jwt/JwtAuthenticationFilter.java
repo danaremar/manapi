@@ -15,18 +15,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-	
+
 	private final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
 	@Autowired
 	JwtService jwtService;
-	
+
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
 
@@ -34,30 +33,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-		try {
-			String token = getToken(request);
-			if (token != null && jwtService.valitateToken(token)) {
-				String username = jwtService.getUsernameFromToken(token);
-				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null,
-						userDetails.getAuthorities());
-
-				SecurityContextHolder.getContext().setAuthentication(auth);
-			}
-		} catch (Exception e) {
-			log.error("doInternalFilter() - Failed JWT request");
+		String token = getToken(request);
+		if (token != null && jwtService.valitateToken(token)) {
+			String username = jwtService.getUsernameFromToken(token);
+			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null,
+					userDetails.getAuthorities());
+			SecurityContextHolder.getContext().setAuthentication(auth);
 		}
 
 		filterChain.doFilter(request, response);
 
 	}
-	
+
 	private String getToken(HttpServletRequest request) {
 		String header = request.getHeader("Authorization");
 		if (header != null && header.startsWith("Bearer")) {
 			return header.replace("Bearer ", "");
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 }

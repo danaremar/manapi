@@ -23,7 +23,7 @@ import com.manapi.manapigateway.exceptions.users.DuplicatedEmail;
 import com.manapi.manapigateway.exceptions.users.DuplicatedUsername;
 import com.manapi.manapigateway.exceptions.users.IncorrectPassword;
 import com.manapi.manapigateway.exceptions.users.UserNotFound;
-import com.manapi.manapigateway.model.users.Plan;
+import com.manapi.manapigateway.model.users.PlanType;
 import com.manapi.manapigateway.model.users.User;
 import com.manapi.manapigateway.model.users.UserShowDto;
 import com.manapi.manapigateway.model.users.UserUpdateDto;
@@ -102,7 +102,7 @@ public class UserService {
 		user.setCreationDate(new Date());
 		user.setLastConnection(new Date());
 		user.setFailedRetries(0L);
-		user.setPlan(Plan.FREE);
+		user.setPlan(PlanType.FREE);
 		userRepository.save(user);
 	}
 

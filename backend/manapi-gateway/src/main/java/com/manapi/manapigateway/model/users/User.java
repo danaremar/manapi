@@ -3,15 +3,18 @@ package com.manapi.manapigateway.model.users;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
@@ -89,56 +92,82 @@ public class User implements UserDetails {
 	@PastOrPresent
 	@Column(nullable = false)
 	private Date lastConnection;
-	
+
 	@JsonIgnore
 	@Column(nullable = false)
 	private Boolean active;
-	
+
 	@Min(value = 0L)
 	private Long failedRetries;
 
 	@Enumerated(EnumType.STRING)
-	private Plan plan;
-	
+	private PlanType plan;
+
 	@Column
 	@PastOrPresent
 	private Date startPlan;
-	
+
 	@Column
 	private Date endPlan;
 
+	@OneToMany(fetch = FetchType.LAZY)
+	private transient List<Subscription> subscriptions;
+
+	/**
+	 * Returns subscriptions plans
+	 * <p>
+	 * Subscriptions denotes features that users can use. By default project feature
+	 * is enabled
+	 * 
+	 * @return user features
+	 */
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		if(plan==null) {
-			return List.of(new SimpleGrantedAuthority(Plan.FREE.name()));
+
+		// returns default
+		if (subscriptions == null || subscriptions.isEmpty()) {
+			return List.of(new SimpleGrantedAuthority(FeatureType.PROJECT.name()));
 		}
-		return List.of(new SimpleGrantedAuthority(plan.name()));
+
+		// filter subscriptions by future end date & extract names
+		List<SimpleGrantedAuthority> ls = subscriptions.stream()
+			.filter(x -> x.getEnd().after(new Date()))
+			.map(x -> new SimpleGrantedAuthority(x.getFeatureType().name()))
+			.collect(Collectors.toList());
+
+		// returns default
+		if(ls==null || ls.isEmpty()) {
+			return List.of(new SimpleGrantedAuthority(FeatureType.PROJECT.name()));
+		}
+
+		// return completed list
+		return ls;
 	}
 
 	@Override
 	public boolean isAccountNonExpired() {
-		
-		// TODO: DELETE DATE < ACTUAL
-		return true;
+		return deleteDate==null || deleteDate.before(new Date());
 	}
 
+	/**
+	 * Denotes if user tried to access multiple times
+	 * @return <code>true</code> if user tried to access less than 10 times
+	 */
 	@Override
 	public boolean isAccountNonLocked() {
-		
-		// TODO: ACTIVE
-		return true;
+		return failedRetries < 10L;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		
+
 		// TODO: DELETE DATE < ACTUAL
 		return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		
+
 		// TODO: ACTIVE
 		return true;
 	}

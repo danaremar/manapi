@@ -1,27 +1,26 @@
 package com.manapi.manapigateway.jwt;
 
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.manapi.manapigateway.config.ManapiMessages;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Component
 public class JwtService {
 
-	private final Logger logger = LoggerFactory.getLogger(JwtService.class);
+	private final Logger log = LoggerFactory.getLogger(JwtService.class);
 
 	@Value("${manapi.security.jwt.secret}")
 	private String secret;
@@ -51,19 +50,13 @@ public class JwtService {
 		try {
 			Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 			return true;
-		} catch (MalformedJwtException e) {
-			logger.error("Malformed token");
-		} catch (UnsupportedJwtException e) {
-			logger.error("Unsupperted token");
 		} catch (ExpiredJwtException e) {
-			logger.error("Expired token");
-		} catch (IllegalArgumentException e) {
-			logger.error("Empty token");
-		} catch (SignatureException e) {
-			logger.error("Signature error");
+			log.debug("validateToken() - Expired jwt bearer token");
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ManapiMessages.TOKEN_EXPIRED);
+		} catch (Exception e) {
+			log.debug("validateToken() - An exception happened:" + e.getMessage());
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ManapiMessages.TOKEN_BAD_FORMAT);
 		}
-
-		return false;
 	}
 
 }

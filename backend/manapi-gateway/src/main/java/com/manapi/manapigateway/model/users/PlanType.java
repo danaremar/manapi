@@ -1,6 +1,6 @@
 package com.manapi.manapigateway.model.users;
 
-public enum Plan {
+public enum PlanType {
 
 	FREE, PREMIUM, ENTERPRISE
 

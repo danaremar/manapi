@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.manapi.manapigateway.jwt.JwtAuthenticationFilter;
+import com.manapi.manapigateway.jwt.JwtEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +29,9 @@ public class SecurityConfig {
 
 	@Autowired
 	UserDetailsService userDetailsService;
+
+	@Autowired
+	JwtEntryPoint jwtEntryPoint;
 
 	@Autowired
 	JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -69,18 +73,22 @@ public class SecurityConfig {
 			http.csrf().disable();
 		}
 
-		// Requests
 		http.authorizeRequests()
 				.antMatchers("/login", "/register", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
 						"/configuration/security", "/swagger-ui.html", "/webjars/**", "/resources/**")
-				.permitAll()
+					.permitAll()
+				.anyRequest()
+					.authenticated()
 				.and()
-				.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+					.sessionManagement()
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
-				.authenticationProvider(authenticationProvider())
-				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-				.userDetailsService(userDetailsService);
+					.exceptionHandling()
+					.authenticationEntryPoint(jwtEntryPoint)
+				.and()
+					.authenticationProvider(authenticationProvider())
+					.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+					.userDetailsService(userDetailsService);
 
 		return http.build();
 	}
