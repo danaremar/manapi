@@ -54,7 +54,7 @@ public class JwtService {
 			log.debug("validateToken() - Expired jwt bearer token");
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ManapiMessages.TOKEN_EXPIRED);
 		} catch (Exception e) {
-			log.debug("validateToken() - An exception happened:" + e.getMessage());
+			log.debug("validateToken() - An exception happened: " + e.getMessage());
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ManapiMessages.TOKEN_BAD_FORMAT);
 		}
 	}

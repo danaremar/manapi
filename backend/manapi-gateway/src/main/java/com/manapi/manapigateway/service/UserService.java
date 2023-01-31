@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.manapi.manapigateway.exceptions.users.DuplicatedEmail;
 import com.manapi.manapigateway.exceptions.users.DuplicatedUsername;
@@ -166,7 +168,7 @@ public class UserService {
 			try {
 				deleteImage(path, user);
 			} catch (Exception e) {
-				// TODO: handle exception
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 		
@@ -177,7 +179,7 @@ public class UserService {
 			user.setImageUid(newImageUid);
 			userRepository.save(user);
 		} catch (IOException e) {
-			throw new RuntimeException();
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}		
 	}
 	
@@ -196,7 +198,7 @@ public class UserService {
 			user.setImageUid(null);
 			userRepository.save(user);
 		} catch (IOException e) {
-			throw new RuntimeException();
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

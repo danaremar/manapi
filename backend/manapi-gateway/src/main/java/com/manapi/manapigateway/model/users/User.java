@@ -162,18 +162,17 @@ public class User implements UserDetails {
 		return failedRetries < 10L;
 	}
 
+	/**
+	 * Never expires. Expiration date was given in JWT auth
+	 */
 	@Override
 	public boolean isCredentialsNonExpired() {
-
-		// TODO: DELETE DATE < ACTUAL
 		return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
-
-		// TODO: ACTIVE
-		return true;
+		return active;
 	}
 
 }

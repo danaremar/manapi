@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Example;
@@ -14,8 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.manapi.manapigateway.config.ManapiMessages;
 import com.manapi.manapigateway.model.projects.Project;
+import com.manapi.manapigateway.model.projects.ProjectCreateDto;
 import com.manapi.manapigateway.model.projects.ProjectRole;
+import com.manapi.manapigateway.model.projects.ProjectRoleCreateDto;
 import com.manapi.manapigateway.model.projects.ProjectRoleNotAcceptedDto;
+import com.manapi.manapigateway.model.projects.ProjectRoleUpdateDto;
+import com.manapi.manapigateway.model.projects.ProjectUpdateDto;
 import com.manapi.manapigateway.model.users.User;
 import com.manapi.manapigateway.repository.ProjectRepository;
 import com.manapi.manapigateway.repository.ProjectRoleRepository;
@@ -23,7 +28,7 @@ import com.manapi.manapigateway.repository.ProjectRoleRepository;
 @Service
 public class ProjectService {
 
-    @Autowired
+	@Autowired
 	private ProjectRoleRepository projectRoleRepository;
 
 	@Autowired
@@ -31,11 +36,16 @@ public class ProjectService {
 
 	@Autowired
 	private UserService userService;
-	
+
+	@Autowired(required = true)
+	protected ModelMapper modelMapper;
+
 	private void verify(Project project, List<Integer> roles) {
 		String username = userService.getCurrentUsername();
-		if (project==null || StringUtils.isEmpty(username) || !project.getActive() || project.getProjectRoles().stream()
-				.noneMatch(x -> (roles.contains(x.getRole())) && (x.getUser().getUsername().equals(username)))) {
+		if (project == null || StringUtils.isEmpty(username) || !project.getActive()
+				|| project.getProjectRoles().stream()
+						.noneMatch(
+								x -> (roles.contains(x.getRole())) && (x.getUser().getUsername().equals(username)))) {
 			throw new AccessDeniedException(ManapiMessages.USER_NOT_ALLOWED);
 		}
 	}
@@ -43,25 +53,25 @@ public class ProjectService {
 	public void verifyOwner(Project project) {
 		verify(project, List.of(0));
 	}
-	
+
 	public void verifyOwnerOrAdmin(Project project) {
-		verify(project, List.of(0,1));
+		verify(project, List.of(0, 1));
 	}
-	
+
 	public void verifyMember(Project project) {
-		verify(project, List.of(0,1,2));
+		verify(project, List.of(0, 1, 2));
 	}
-	
+
 	public void verifyUserRelatedWithProject(Project project) {
-		verify(project, List.of(0,1,2,3));
+		verify(project, List.of(0, 1, 2, 3));
 	}
-	
+
 	public List<User> usersInProject(Project project) {
 		return project.getProjectRoles().parallelStream()
 				.map(ProjectRole::getUser)
 				.collect(Collectors.toList());
 	}
-	
+
 	public List<String> usernamesInProject(Project project) {
 		return usersInProject(project).stream()
 				.map(User::getUsername)
@@ -79,20 +89,27 @@ public class ProjectService {
 	}
 
 	@Transactional
-	public void createProject(Project project) {
+	public void createProject(ProjectCreateDto projectCreateDto) {
+
+		Project project = modelMapper.map(projectCreateDto, Project.class);
+		project.setActive(true);
+		project.setCreationDate(new Date());
+
 		Project projectSaved = projectRepository.save(project);
 
+		// create owner role
 		ProjectRole projectRole = new ProjectRole();
-		projectRole.setRole(0); // OWNER
+		projectRole.setRole(0);
 		projectRole.setAccepted(true);
 		projectRole.setUser(userService.getCurrentUser());
 		projectRole.setProject(projectSaved);
 
 		projectRoleRepository.save(projectRole);
 	}
-
+	
 	@Transactional
-	public void update(Project newProject) {
+	public void update(ProjectUpdateDto projectUpdateDto) {
+		Project newProject = modelMapper.map(projectUpdateDto, Project.class);
 		Project oldProject = findProjectById(newProject.getId());
 
 		verifyOwner(oldProject);
@@ -110,7 +127,7 @@ public class ProjectService {
 
 		Boolean activeNow = !project.getActive();
 		project.setActive(activeNow);
-		if (!activeNow) {
+		if (Boolean.FALSE.equals(activeNow)) {
 			project.setCloseDate(new Date());
 		} else {
 			project.setCloseDate(null);
@@ -135,14 +152,20 @@ public class ProjectService {
 	 */
 
 	private void verifySaveRole(ProjectRole saveProjectRole) {
+
+		// get projectRole from user
 		String username = userService.getCurrentUsername();
 		ProjectRole userProjectRole = saveProjectRole.getProject().getProjectRoles().stream()
 				.filter(x -> x.getUser().getUsername().equals(username)).findFirst()
 				.orElseThrow(() -> new AccessDeniedException(ManapiMessages.USER_NOT_ALLOWED));
 
+		// determine if it's posible to save
 		if (!saveProjectRole.getUser().getUsername().equals(userService.getCurrentUsername())
-				&& !List.of(1, 2, 3).contains(saveProjectRole.getRole()) // can't save an Owner role
-				&& !List.of(0, 1).contains(userProjectRole.getRole())) { // must only be edited by Owner or admin
+				&& (!List.of(1, 2, 3).contains(saveProjectRole.getRole()) // can't save an Owner role
+						&& !List.of(0, 1).contains(userProjectRole.getRole()) || // must only be edited by Owner or
+																					// admin
+						saveProjectRole.getRole() == 0 && userProjectRole.getRole() == 0)) { // admin can save another
+																								// admin
 			throw new AccessDeniedException(ManapiMessages.USER_NOT_ALLOWED);
 		}
 	}
@@ -178,9 +201,25 @@ public class ProjectService {
 	}
 
 	@Transactional
-	public void createRole(ProjectRole projectRole) {
+	public void createRole(ProjectRoleCreateDto projectRoleCreateDto) {
+
+		// get user & project
+		User user = userService.findUserByUsername(projectRoleCreateDto.getUsername());
+		if (user == null)
+			throw new NullPointerException("User doesn't exists in the system");
+		Project project = findProjectById(projectRoleCreateDto.getProjectId());
+		if (project == null)
+			throw new NullPointerException("Project doesn't exists in the system");
+
+		// set new projectRole
+		ProjectRole projectRole = new ProjectRole();
+		projectRole.setProject(project);
+		projectRole.setUser(user);
+		projectRole.setRole(projectRoleCreateDto.getRole());
+
+		// verify
 		verifySaveRole(projectRole);
-		if (existsOtherRole(projectRole)) {
+		if (Boolean.TRUE.equals(existsOtherRole(projectRole))) {
 			throw new DuplicateKeyException("This role already exists");
 		}
 		projectRole.setAccepted(false);
@@ -188,11 +227,17 @@ public class ProjectService {
 	}
 
 	@Transactional
-	public void updateRole(ProjectRole projectRole) {
-		ProjectRole oldProjectRole = findProjectRoleById(projectRole.getId());
+	public void updateRole(ProjectRoleUpdateDto projectRoleUpdateDto) {
+		ProjectRole oldProjectRole = findProjectRoleById(projectRoleUpdateDto.getId());
 		verifySaveRole(oldProjectRole);
-		oldProjectRole.setRole(projectRole.getRole());
+		oldProjectRole.setRole(projectRoleUpdateDto.getRole());
 		projectRoleRepository.save(oldProjectRole);
+	}
+
+	@Transactional
+	public List<ProjectRoleNotAcceptedDto> getAllMyInvitations() {
+		User user = userService.getCurrentUser();
+		return getAllInvitationsFromUser(user);
 	}
 
 	@Transactional
@@ -203,11 +248,11 @@ public class ProjectService {
 
 		Example<ProjectRole> example = Example.of(exampleProjectRole);
 		List<ProjectRole> projectRoles = projectRoleRepository.findAll(example);
-		
+
 		return projectRoles.stream()
-				.filter(x->x.getProject().getActive())
-				.map(x->new ProjectRoleNotAcceptedDto(x.getId(), x.getRole(), x.getProject().getName()))
+				.filter(x -> x.getProject().getActive())
+				.map(x -> new ProjectRoleNotAcceptedDto(x.getId(), x.getRole(), x.getProject().getName()))
 				.collect(Collectors.toList());
 	}
-    
+
 }
