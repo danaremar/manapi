@@ -10,6 +10,7 @@ public class ManapiMessages {
 	public static final String MUST_BE_LOGGED = "User must be logged to perform this action";
 	public static final String TOKEN_EXPIRED = "Token expired";
 	public static final String TOKEN_BAD_FORMAT = "Token given is unsupported";
+	public static final String RATE_EXCEEDED = "Rate cuota was exceeded";
 
 	// USER
 	public static final String USER_NOT_FOUND_MESSAGE = "User doesn't found";
