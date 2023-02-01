@@ -34,7 +34,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Project")
 @SecurityRequirement(name = "Bearer Authentication")
 @CrossOrigin
-public class ProjectRestController {
+public class ProjectController {
 
 	@Autowired
 	ProjectService projectService;
