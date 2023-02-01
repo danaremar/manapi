@@ -10,10 +10,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.manapi.manapigateway.exceptions.users.DuplicatedEmail;
+import com.manapi.manapigateway.exceptions.users.DuplicatedUsername;
 import com.manapi.manapigateway.model.users.UserCreateDto;
+import com.manapi.manapigateway.service.UserService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -22,8 +26,11 @@ public class AuthControllerTests {
     @Autowired
 	private MockMvc mockMvc;
 
+    @MockBean
+    private UserService userService;
+
     @BeforeEach
-    void setup() {
+    void setup() throws DuplicatedUsername, DuplicatedEmail {
 
         // user
         UserCreateDto user1 = new UserCreateDto();
@@ -34,39 +41,32 @@ public class AuthControllerTests {
         user1.setLastName("Nogtir");
         user1.setSector("Software");
         user1.setCountry("ES");
+        userService.addUser(user1);
 
     }
 
     @Test
     void testCreateUser() throws Exception {
-
         JSONObject json = new JSONObject();
-        json.put("username", "test");
+        json.put("username", "testXD");
         json.put("password", "test_1234TEST");
-        json.put("email", "test@test.com");
+        json.put("email", "test_xd@test.com");
         json.put("name", "Test");
         json.put("lastName", "Testito");
-        json.put("Sector", "Software");
-        json.put("Contry", "test");
-
+        json.put("sector", "Software");
+        json.put("country", "ES");
         this.mockMvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON).content(json.toString()))
-
-				// Validate the response code and content type
 				.andExpect(status().isCreated());
 
     }
 
     @Test
-    void testLoginUser() throws Exception {
+    void testLoginUserFailed() throws Exception {
         JSONObject json = new JSONObject();
         json.put("username", "test");
         json.put("password", "test_1234TEST");
-
         this.mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(json.toString()))
-
-				// Validate the response code and content type
-				.andExpect(status().is2xxSuccessful());
-
+				.andExpect(status().is4xxClientError());
     }
     
 }

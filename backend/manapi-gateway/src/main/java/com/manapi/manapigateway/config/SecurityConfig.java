@@ -74,8 +74,8 @@ public class SecurityConfig {
 		}
 
 		http.authorizeRequests()
-				.antMatchers("/login", "/register", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
-						"/configuration/security", "/swagger-ui.html", "/webjars/**", "/resources/**")
+				.antMatchers("/login", "/register", "/v3/api-docs", "/v3/api-docs/*", "/configuration/ui",
+						"/swagger-resources/**", "/configuration/security", "/swagger-ui/*", "/webjars/**", "/resources/**")
 					.permitAll()
 				.anyRequest()
 					.authenticated()

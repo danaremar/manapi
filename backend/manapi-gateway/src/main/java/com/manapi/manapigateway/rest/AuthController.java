@@ -4,7 +4,6 @@ import java.util.Collections;
 
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ import com.manapi.manapigateway.exceptions.users.DuplicatedEmail;
 import com.manapi.manapigateway.exceptions.users.DuplicatedUsername;
 import com.manapi.manapigateway.jwt.JwtDto;
 import com.manapi.manapigateway.jwt.JwtService;
-import com.manapi.manapigateway.model.users.User;
 import com.manapi.manapigateway.model.users.UserCreateDto;
 import com.manapi.manapigateway.model.users.UserLoginDto;
 import com.manapi.manapigateway.model.util.Message;
@@ -41,9 +39,6 @@ public class AuthController {
 
     @Autowired
     UserService userService;
-
-    @Autowired(required = true)
-	protected ModelMapper modelMapper;
 
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -78,9 +73,8 @@ public class AuthController {
 
 	@PostMapping(value = "/register")
 	public ResponseEntity<Object> register(@RequestBody @Valid UserCreateDto userDto) {
-		User user = modelMapper.map(userDto, User.class);
 		try {
-			userService.addUser(user);
+			userService.addUser(userDto);
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (DuplicatedUsername e) {
 			String message = "Username is duplicated";

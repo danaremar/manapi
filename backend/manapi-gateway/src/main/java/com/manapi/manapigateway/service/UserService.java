@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import com.manapi.manapigateway.exceptions.users.IncorrectPassword;
 import com.manapi.manapigateway.exceptions.users.UserNotFound;
 import com.manapi.manapigateway.model.users.PlanType;
 import com.manapi.manapigateway.model.users.User;
+import com.manapi.manapigateway.model.users.UserCreateDto;
 import com.manapi.manapigateway.model.users.UserShowDto;
 import com.manapi.manapigateway.model.users.UserUpdateDto;
 import com.manapi.manapigateway.repository.UserRepository;
@@ -92,7 +95,8 @@ public class UserService {
 	}
 	
 	@Transactional
-	public void addUser(User user) throws DuplicatedUsername, DuplicatedEmail {
+	public void addUser(@Valid UserCreateDto userDto) throws DuplicatedUsername, DuplicatedEmail {
+		User user = modelMapper.map(userDto, User.class);
 		if (findUserByUsername(user.getUsername()) != null) {
 			throw new DuplicatedUsername();
 		}
