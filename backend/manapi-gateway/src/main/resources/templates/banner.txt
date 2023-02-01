@@ -15,11 +15,10 @@
 
 ======================================================================
 
-	Project: iMan ©
+	Project: Manapi ©
 	License: GPLv3
 	Version: v1.1
 	Author: Daniel Arellano Martinez
 
 ======================================================================
-	
-	Compiling service...
+

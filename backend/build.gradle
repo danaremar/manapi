@@ -1,59 +1,49 @@
-buildscript {
-    ext {
-        springBootVersion = '3.0.2'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.2'
+	id 'io.spring.dependency-management' version '1.1.0'
 }
 
-ext {
-    set('springBootVersion', "2.3.1.RELEASE")
+group = 'com.manapi'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '19'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
 }
 
-allprojects {
-    apply plugin: 'idea'
-    apply plugin: 'eclipse'
-    apply plugin: 'eclipse-wtp'
+repositories {
+	mavenCentral()
 }
 
-subprojects {
-    repositories {
-        mavenCentral()
-        flatDir {
-            dirs 'lib'
-        }
-    }
-    group = 'com.manapi'
-    version = '0.0.1'
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-jersey'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-web-services'
+	implementation 'org.springframework.session:spring-session-jdbc'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+	implementation 'org.modelmapper:modelmapper:3.1.1'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'org.apache.commons:commons-lang3:3.0'
+	implementation 'com.google.guava:guava:31.1-jre'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.h2database:h2:2.1.214'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'junit:junit:4.13.2'
+}
 
-    apply plugin: 'java'
-    sourceCompatibility = 1.17 // sourceCompatibility should be applied after java plugin
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
-
-    apply from: "$rootProject.projectDir/gradle/plugins/projectDependencyReport.gradle"
-    apply from: "$rootProject.projectDir/gradle/plugins/publish/mavenPublish.gradle"
-
-    dependencyManagement {
-        imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-            mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
-        }
-    }
-
-    configurations {
-        providedRuntime
-    }
-
-    dependencies {
-        testCompile("org.springframework.boot:spring-boot-starter-test")
-    }
-
-    test {
-        useJUnitPlatform()
-    }
+test {
+	useJUnitPlatform()
 }

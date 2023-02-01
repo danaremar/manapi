@@ -1,1 +1,6 @@
-rootProject.name = 'manapi-gateway'
+rootProject.name = 'manapi-backend'
+include 'manapi-gateway'
+include 'manapi-project'
+include 'manapi-cmdb'
+include 'manapi-hr'
+include 'manapi-security'

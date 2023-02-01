@@ -104,7 +104,7 @@ public class UserController {
 			userService.uploadImage(image);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(new Message("Image cannot be updated"), HttpStatus.CONFLICT);
+			return new ResponseEntity<>(new Message(ManapiMessages.IMAGE_CANNOT_UPDATED), HttpStatus.CONFLICT);
 		}
 	}
 	
@@ -114,7 +114,7 @@ public class UserController {
 			userService.deleteImage();
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(new Message("Image cannot be deleted"), HttpStatus.CONFLICT);
+			return new ResponseEntity<>(new Message(ManapiMessages.IMAGE_CANNOT_DELETED), HttpStatus.CONFLICT);
 		}
 	}
 
