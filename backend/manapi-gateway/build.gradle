@@ -5,5 +5,7 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'com.google.guava:guava:31.1-jre'
 	implementation 'com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.cloud:spring-cloud-starter:3.1.5'
+	// implementation 'org.springframework.cloud:spring-cloud-starter-gateway:3.1.5'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'	
 }

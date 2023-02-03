@@ -2,6 +2,6 @@ group = 'com.manapi.manapiproject'
 
 dependencies {
 
-    implementation project(':manapi-gateway')
+    // implementation project(':manapi-gateway')
 	
 }
