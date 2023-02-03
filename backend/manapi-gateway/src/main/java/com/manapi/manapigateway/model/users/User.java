@@ -27,6 +27,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.manapi.manapicommon.model.users.PlanType;
+import com.manapi.manapicommon.model.users.FeatureType;
 import com.manapi.manapigateway.model.projects.ProjectRole;
 
 import lombok.AllArgsConstructor;

@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.manapi.manapigateway.model.projects.Project;
-import com.manapi.manapigateway.model.projects.ProjectCreateDto;
-import com.manapi.manapigateway.model.projects.ProjectRoleCreateDto;
-import com.manapi.manapigateway.model.projects.ProjectRoleNotAcceptedDto;
-import com.manapi.manapigateway.model.projects.ProjectRoleUpdateDto;
-import com.manapi.manapigateway.model.projects.ProjectUpdateDto;
+import com.manapi.manapicommon.model.projects.ProjectCreateDto;
+import com.manapi.manapicommon.model.projects.ProjectRoleCreateDto;
+import com.manapi.manapicommon.model.projects.ProjectRoleNotAcceptedDto;
+import com.manapi.manapicommon.model.projects.ProjectRoleUpdateDto;
+import com.manapi.manapicommon.model.projects.ProjectUpdateDto;
 import com.manapi.manapigateway.model.util.Message;
 import com.manapi.manapigateway.service.ProjectService;
 

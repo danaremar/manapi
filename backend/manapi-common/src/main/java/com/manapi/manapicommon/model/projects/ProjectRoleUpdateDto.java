@@ -1,4 +1,8 @@
-package com.manapi.manapigateway.model.projects;
+package com.manapi.manapicommon.model.projects;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +11,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectRoleNotAcceptedDto {
+public class ProjectRoleUpdateDto {
 	
+	@NotNull
 	private Long id;
 
 	/**
@@ -20,7 +25,8 @@ public class ProjectRoleNotAcceptedDto {
      * 2 -> MEMBER <p>
      * 3 -> VISITOR <p>
      */
+	@NotNull
+	@Min(value = 0)
+	@Max(value = 3)
 	private Integer role;
-	
-	private String projectName;
 }

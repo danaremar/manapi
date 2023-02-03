@@ -1,4 +1,4 @@
-package com.manapi.manapigateway.model.projects;
+package com.manapi.manapicommon.model.projects;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

@@ -15,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.manapi.manapigateway.config.ManapiMessages;
 import com.manapi.manapigateway.model.projects.Project;
-import com.manapi.manapigateway.model.projects.ProjectCreateDto;
+import com.manapi.manapicommon.model.projects.ProjectCreateDto;
 import com.manapi.manapigateway.model.projects.ProjectRole;
-import com.manapi.manapigateway.model.projects.ProjectRoleCreateDto;
-import com.manapi.manapigateway.model.projects.ProjectRoleNotAcceptedDto;
-import com.manapi.manapigateway.model.projects.ProjectRoleUpdateDto;
-import com.manapi.manapigateway.model.projects.ProjectUpdateDto;
+import com.manapi.manapicommon.model.projects.ProjectRoleCreateDto;
+import com.manapi.manapicommon.model.projects.ProjectRoleNotAcceptedDto;
+import com.manapi.manapicommon.model.projects.ProjectRoleUpdateDto;
+import com.manapi.manapicommon.model.projects.ProjectUpdateDto;
 import com.manapi.manapigateway.model.users.User;
 import com.manapi.manapigateway.repository.ProjectRepository;
 import com.manapi.manapigateway.repository.ProjectRoleRepository;

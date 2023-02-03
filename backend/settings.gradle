@@ -1,4 +1,5 @@
 rootProject.name = 'manapi-backend'
+include 'manapi-common'
 include 'manapi-gateway'
 include 'manapi-project'
 // include 'manapi-cmdb'

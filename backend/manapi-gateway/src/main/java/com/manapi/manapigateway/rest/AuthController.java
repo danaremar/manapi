@@ -24,8 +24,8 @@ import com.manapi.manapigateway.exceptions.users.DuplicatedEmail;
 import com.manapi.manapigateway.exceptions.users.DuplicatedUsername;
 import com.manapi.manapigateway.jwt.JwtDto;
 import com.manapi.manapigateway.jwt.JwtService;
-import com.manapi.manapigateway.model.users.UserCreateDto;
-import com.manapi.manapigateway.model.users.UserLoginDto;
+import com.manapi.manapicommon.model.users.UserCreateDto;
+import com.manapi.manapicommon.model.users.UserLoginDto;
 import com.manapi.manapigateway.model.util.Message;
 import com.manapi.manapigateway.service.UserService;
 

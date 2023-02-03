@@ -1,4 +1,4 @@
-package com.manapi.manapigateway.model.users;
+package com.manapi.manapicommon.model.users;
 
 public enum FeatureType {
 
