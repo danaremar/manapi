@@ -26,6 +26,7 @@ import com.manapi.manapigateway.jwt.JwtDto;
 import com.manapi.manapigateway.jwt.JwtService;
 import com.manapi.manapicommon.model.users.UserCreateDto;
 import com.manapi.manapicommon.model.users.UserLoginDto;
+import com.manapi.manapigateway.model.users.User;
 import com.manapi.manapigateway.model.util.Message;
 import com.manapi.manapigateway.service.UserService;
 
@@ -64,7 +65,9 @@ public class AuthController {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String jwt = this.jwtService.generateToken(userDetails);
+		User user = userService.findUserByUsername(userDetails.getUsername());
+
+		String jwt = this.jwtService.generateToken(user);
 
 		JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
 

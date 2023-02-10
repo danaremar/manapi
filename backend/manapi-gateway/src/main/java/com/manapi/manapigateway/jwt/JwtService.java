@@ -3,19 +3,23 @@ package com.manapi.manapigateway.jwt;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.manapi.manapicommon.model.users.FeatureType;
 import com.manapi.manapigateway.config.ManapiMessages;
+import com.manapi.manapigateway.model.users.User;
+import com.manapi.manapigateway.service.ProjectService;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Component
 public class JwtService {
@@ -32,14 +36,37 @@ public class JwtService {
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
 	}
 
-	public String generateToken(UserDetails userDetails) {
-		return generateToken(new HashMap<>(), userDetails);
+	public String generateToken(User user) {
+		Map<String, Object> claims = new HashMap<>();
+
+		// PLAN
+		claims.put("plan", user.getPlan().name());
+
+		// FEATURES
+		if (user.getSubscriptions()!=null) {
+			List<String> features = user.getSubscriptions().stream()
+					.map(x -> x.getFeatureType().name())
+					.toList();
+			claims.put("features", features);
+		} else {
+			claims.put("features", List.of(FeatureType.PROJECT.name()));
+		}
+
+		// PROJECTS
+		if (user.getProjectRoles()!=null) {
+			Map<String, String> projectsRoles = new HashMap<>();
+			user.getProjectRoles().stream()
+					.forEach(x -> projectsRoles.put(x.getProject().getId().toString(), x.getRole().toString()));
+			claims.put("projects", projectsRoles);
+		}
+
+		return generateToken(claims, user);
 	}
 
-	public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+	public String generateToken(Map<String, Object> extraClaims, User user) {
 		return Jwts.builder()
 				.setClaims(extraClaims)
-				.setSubject(userDetails.getUsername())
+				.setSubject(user.getUsername())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * expiration))
 				.signWith(SignatureAlgorithm.HS512, secret)
