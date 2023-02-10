@@ -6,4 +6,4 @@ INSERT INTO users (id, active, country, creation_date, delete_date, email, end_p
 INSERT INTO projects(id, active, creation_date, close_date, description, name) VALUES(1, 1, '2021-01-31 12:25:01', NULL, 'Incredible project', 'IMAN PROJECT');
 
 -- PROJECT ROLES
-INSERT INTO project2roles(id, accepted, `role`, project_id, user_id) VALUES(1, 1, 0, 1, 1);
+INSERT INTO project2role(id, accepted, `role`, project_id, user_id) VALUES(1, 1, 0, 1, 1);

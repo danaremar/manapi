@@ -25,7 +25,6 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
 
         log.error("Unautorized user");
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ManapiMessages.NOT_AUTHORIZED);
-
     }
 
 }

@@ -6,8 +6,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.manapi.manapicommon.model.users.FeatureType;
 import com.manapi.manapigateway.config.ManapiMessages;
 import com.manapi.manapigateway.model.users.User;
-import com.manapi.manapigateway.service.ProjectService;
-
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,7 +16,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.http.HttpStatus;
 
 @Component
@@ -43,14 +40,14 @@ public class JwtService {
 		claims.put("plan", user.getPlan().name());
 
 		// FEATURES
-		if (user.getSubscriptions()!=null) {
-			List<String> features = user.getSubscriptions().stream()
+		List<String> features = List.of(FeatureType.PROJECT.name());
+		if (user.getSubscriptions()!=null && user.getSubscriptions().isEmpty()) {
+			features = user.getSubscriptions().stream()
 					.map(x -> x.getFeatureType().name())
 					.toList();
-			claims.put("features", features);
-		} else {
-			claims.put("features", List.of(FeatureType.PROJECT.name()));
+			claims.put("features", features.toString());
 		}
+		claims.put("features", features.toString());
 
 		// PROJECTS
 		if (user.getProjectRoles()!=null) {
