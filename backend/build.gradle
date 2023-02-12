@@ -44,7 +44,7 @@ allprojects {
 		runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
 		// BBDD -> NoSQL
-		implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+		// implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
 		// JERSEY contains spring-boot-web -> not works with webflux
 		implementation 'org.springframework.boot:spring-boot-starter-jersey'
