@@ -9,16 +9,8 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
-
 @SpringBootApplication
 @EnableWebFlux
-// @OpenAPIDefinition(info = @Info(
-// title = "Manapi gateway service",
-// version = "v0.3",
-// description = "Manapi gateway service"
-// ))
 public class ManapiGatewayApplication {
 
 	public static void main(String[] args) {

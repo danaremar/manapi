@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.manapi.manapigateway.dto.UserCreateDto;
 import com.manapi.manapigateway.service.UserService;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 

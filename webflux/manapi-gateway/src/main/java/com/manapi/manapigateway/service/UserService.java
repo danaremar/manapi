@@ -17,7 +17,7 @@ import com.manapi.manapigateway.dto.UserCreateDto;
 import com.manapi.manapigateway.dto.UserShowDto;
 import com.manapi.manapigateway.model.subscription.Subscription;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 
 @Service
 public class UserService {
