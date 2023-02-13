@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import reactor.core.publisher.Mono;
 
+import com.manapi.manapigateway.model.subscription.Plan;
 import com.manapi.manapigateway.model.user.User;
 import com.manapi.manapigateway.service.UserService;
 
@@ -43,6 +44,9 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
                     SecurityContextHolder.getContext().setAuthentication(auth);
 
                     Claims claims = jwtService.getClaimsFromToken(token);
+
+                    Plan plan = new Plan();
+                    plan = plan.getPlan(token);
 
                     // TODO: add bucket
                     List<String> ls = new ArrayList<>();

@@ -27,22 +27,14 @@ public class AuthController {
 
     @PostMapping(value = "/login")
     public ResponseEntity<Object> login(@RequestBody @Valid UserLoginDto userDto) {
-        try {
-            JwtDto jwtDto = userService.getJwtFromUser(userDto);
-            return new ResponseEntity<>(jwtDto, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        JwtDto jwtDto = userService.getJwtFromUser(userDto);
+        return new ResponseEntity<>(jwtDto, HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/register")
     public ResponseEntity<Object> register(@RequestBody @Valid UserCreateDto userCreateDto) {
-        try {
-            userService.addUser(userCreateDto);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        userService.addUser(userCreateDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }
