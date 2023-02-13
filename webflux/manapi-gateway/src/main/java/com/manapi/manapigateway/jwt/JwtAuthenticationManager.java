@@ -52,20 +52,4 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
 
     }
 
-    // @Override
-    // public Mono<Authentication> authenticate(Authentication authentication) {
-    // String user = authentication.getName().toString();
-    // String pass = authentication.getCredentials().toString();
-
-    // return Mono.just(authentication)
-    // .map(x -> {
-    // UsernamePasswordAuthenticationToken auth = new
-    // UsernamePasswordAuthenticationToken(user,
-    // pass);
-
-    // return auth;
-    // });
-
-    // }
-
 }

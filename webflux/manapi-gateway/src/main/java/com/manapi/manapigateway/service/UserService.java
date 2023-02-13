@@ -7,7 +7,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,6 +15,7 @@ import com.manapi.manapigateway.repository.UserRepository;
 
 import reactor.core.publisher.Mono;
 
+import com.manapi.manapigateway.configuration.CustomPasswordEncoder;
 import com.manapi.manapigateway.configuration.ManapiMessages;
 import com.manapi.manapigateway.dto.UserCreateDto;
 import com.manapi.manapigateway.dto.UserLoginDto;
@@ -41,7 +41,7 @@ public class UserService {
     protected ModelMapper modelMapper;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    CustomPasswordEncoder customPasswordEncoder;
 
     // REACTIVE
     public Mono<String> getCurrentUsername() {
@@ -94,7 +94,7 @@ public class UserService {
         }
         PrincipalUser principalUser = PrincipalUser.build(user);
 
-        String passToCheck = this.passwordEncoder.encode(userLoginDto.getPassword());
+        String passToCheck = this.customPasswordEncoder.encode(userLoginDto.getPassword());
         if (!passToCheck.equals(user.getPassword())) {
             failedRetry(user);
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ManapiMessages.USER_OLD_PASSWORD_INCORRECT);
@@ -116,7 +116,7 @@ public class UserService {
 
         // TODO: check if duplicated username or duplicated email
 
-        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        user.setPassword(this.customPasswordEncoder.encode(user.getPassword()));
         user.setActive(true);
         user.setCreationDate(new Date());
         user.setFailedRetries(0L);
