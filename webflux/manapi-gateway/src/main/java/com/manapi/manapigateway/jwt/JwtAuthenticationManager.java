@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import reactor.core.publisher.Mono;
 
-import com.manapi.manapigateway.exception.UnauthorizedException;
 import com.manapi.manapigateway.model.user.User;
 import com.manapi.manapigateway.service.UserService;
 

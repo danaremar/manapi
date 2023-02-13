@@ -3,7 +3,6 @@ package com.manapi.manapigateway.service;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -12,8 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.security.core.Authentication;
-
 import com.manapi.manapigateway.model.user.User;
 import com.manapi.manapigateway.repository.UserRepository;
 
@@ -29,8 +26,6 @@ import com.manapi.manapigateway.jwt.PrincipalUser;
 import com.manapi.manapigateway.jwt.JwtDto;
 
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import javax.validation.Valid;
 
 @Service
