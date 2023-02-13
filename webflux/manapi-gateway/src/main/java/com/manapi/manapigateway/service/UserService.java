@@ -49,7 +49,7 @@ public class UserService {
     }
 
     public Mono<User> getCurrentUser() {
-        return getCurrentUsername().map(x -> findUserByUsername(x));
+        return getCurrentUsername().map(this::findUserByUsername);
     }
 
     public User findUserById(String id) {
