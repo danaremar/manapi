@@ -26,14 +26,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.springframework.session:spring-session-core'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'	
 
 	// OTHERS
 	implementation 'org.modelmapper:modelmapper:3.1.1'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
 	implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.14'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
 
 	// BBDD -> RDBMS
 	// implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
