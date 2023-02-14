@@ -1,8 +1,5 @@
 package com.manapi.manapigateway.jwt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,11 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import reactor.core.publisher.Mono;
 
-import com.manapi.manapigateway.model.subscription.Plan;
 import com.manapi.manapigateway.model.user.User;
 import com.manapi.manapigateway.service.UserService;
-
-import io.jsonwebtoken.Claims;
 
 @Component
 public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
@@ -42,15 +36,6 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
                             null,
                             principalUser.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(auth);
-
-                    Claims claims = jwtService.getClaimsFromToken(token);
-
-                    Plan plan = new Plan();
-                    plan = plan.getPlan(token);
-
-                    // TODO: add bucket
-                    List<String> ls = new ArrayList<>();
-
                     return auth;
                 });
 
