@@ -28,7 +28,7 @@ public class Plan {
 
     private Long quota;
 
-    private Long quotaLimit;
+    private Long quotaUnit;
 
     private Double cost;
 
@@ -46,7 +46,7 @@ public class Plan {
         plan.setRate(5L);
         plan.setRateUnit(1L);
         plan.setQuota(100L);
-        plan.setQuotaLimit(60L);
+        plan.setQuotaUnit(60L);
 
         // limitations
         Map<String, Integer> defaultLimits = new HashMap<>();
@@ -78,7 +78,7 @@ public class Plan {
             plan.setRate(Long.valueOf((Integer) yamlSelPlan.get("rate")));
             plan.setRateUnit(Long.valueOf((Integer) yamlSelPlan.get("rateunit")));
             plan.setQuota(Long.valueOf((Integer) yamlSelPlan.get("quota")));
-            plan.setQuotaLimit(Long.valueOf((Integer) yamlSelPlan.get("quotaunit")));
+            plan.setQuotaUnit(Long.valueOf((Integer) yamlSelPlan.get("quotaunit")));
             plan.setCost((Double) yamlSelPlan.get("cost"));
 
             Map<String, Integer> featureLimitsMap = (Map<String, Integer>) yamlSelPlan.get("limits");

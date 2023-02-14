@@ -1,5 +1,6 @@
 package com.manapi.manapigateway.model.user;
 
+import com.manapi.manapigateway.model.subscription.Plan;
 import com.manapi.manapigateway.model.subscription.Subscription;
 
 import java.util.Date;
@@ -43,5 +44,35 @@ public class User {
     private Long failedRetries;
 
     private List<Subscription> subscriptions;
+
+    /**
+     * Get valid subscription
+     * @return
+     */
+    public Subscription getValidSubscription() {
+        return subscriptions.stream()
+                .filter(x -> x.getEndDate() != null && x.getEndDate().after(new Date()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Get plan
+     * 
+     * @return
+     */
+    public Plan getActualPlan() {
+
+        // find valid subscription
+        Subscription s = getValidSubscription();
+
+        // if exists: get plan -> if not: default plan
+        Plan plan = new Plan();
+        if (s == null || s.getPlan()==null) {
+            return plan.getPlan("free");
+        } else {
+            return plan.getPlan(s.getPlan());
+        }
+    }
 
 }

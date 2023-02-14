@@ -40,29 +40,17 @@ public class JwtService {
 	public String generateToken(User user) {
 		Map<String, Object> claims = new HashMap<>();
 
+		// PLAN
+		claims.put("plan", user.getActualPlan().getType());
+
 		/* 
         // TODO: add claims
 
 		// PLAN
-		claims.put("plan", user.getPlan().name());
 
 		// FEATURES
-		List<String> features = List.of(FeatureType.PROJECT.name());
-		if (user.getSubscriptions()!=null && user.getSubscriptions().isEmpty()) {
-			features = user.getSubscriptions().stream()
-					.map(x -> x.getFeatureType().name())
-					.toList();
-			claims.put("features", features.toString());
-		}
-		claims.put("features", features.toString());
 
 		// PROJECTS
-		if (user.getProjectRoles()!=null) {
-			Map<String, String> projectsRoles = new HashMap<>();
-			user.getProjectRoles().stream()
-					.forEach(x -> projectsRoles.put(x.getProject().getId().toString(), x.getRole().toString()));
-			claims.put("projects", projectsRoles);
-		}
 		*/
 
 		return generateToken(claims, user);

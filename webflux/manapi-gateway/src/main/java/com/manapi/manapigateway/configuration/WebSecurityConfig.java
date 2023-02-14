@@ -29,7 +29,7 @@ public class WebSecurityConfig {
 	public Boolean enableCsrfProtection = Boolean.TRUE;
 
 	@Bean
-	public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, JwtAuthenticationManager jwtAuthenticationManager, JwtAuthenticationConverter jwtAuthenticationConverter) {
+	public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, JwtAuthenticationManager jwtAuthenticationManager, JwtAuthenticationConverter jwtAuthenticationConverter, RateFilter rateFilter) {
 
 		AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(jwtAuthenticationManager);
         authenticationWebFilter.setServerAuthenticationConverter(jwtAuthenticationConverter);
@@ -37,7 +37,6 @@ public class WebSecurityConfig {
 		return http
 				.csrf()
 					.disable()
-				// .authenticationManager(jwtAuthenticationManager)
 				.authorizeExchange()
 					.pathMatchers("/login", "/register", "/v3/*", "/configuration/ui",
 							"/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/swagger-ui/*",
@@ -47,7 +46,6 @@ public class WebSecurityConfig {
 						.permitAll()
 						// .authenticated()
 				.and()
-					// .authenticationManager(jwtAuthenticationManager)
 					.exceptionHandling()
 						.authenticationEntryPoint((exchange, e) -> 
 							Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED))
@@ -55,9 +53,17 @@ public class WebSecurityConfig {
 						.accessDeniedHandler((exchange, e) -> 
 							Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN))
 					)
+
+				// FILTERS
 				.and()
+
+					// AUTHENTICATION
 					.addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-					.build();
+					
+					// RATE LIMIT
+					// .addFilterAfter(rateFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+					
+				.build();
 
 	}
 
