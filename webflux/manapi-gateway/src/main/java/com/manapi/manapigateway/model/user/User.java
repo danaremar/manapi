@@ -50,11 +50,42 @@ public class User {
      * @return
      */
     public Subscription getValidSubscription() {
-        return subscriptions.stream()
+
+        // get subscription with valid end date
+        Subscription s = subscriptions.stream()
                 .filter(x -> x.getEndDate() != null && x.getEndDate().after(new Date()))
                 .findFirst()
                 .orElse(null);
+
+        // if subscription is not founded
+        if(s==null) {
+            return new Subscription().getDefaulSubscription();
+        }
+
+        return s;
     }
+
+    /**
+     * Get feature groups
+     * 
+     * @return
+     */
+    public List<String> getActiveFeatureGroups() {
+        return getValidSubscription().getFeatureGroups();
+    }
+
+    /**
+     * Get all features from all feature groups
+     * 
+     * @return
+     */
+    public List<String> getActiveFeatures() {
+        return getActiveFeatureGroups().stream()
+            .flatMap(x -> new Subscription().getFeaturesFromGroup(x).stream())
+            .distinct()
+            .toList();
+    }
+    
 
     /**
      * Get plan

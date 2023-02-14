@@ -27,27 +27,27 @@ plans:
       projects: 500
 
 featuregroups:
-  - project:
-      price: 0.0
-      features:
-        - effort
-        - gantt
-        - kanban
-        - sprint
+  project:
+    price: 0.0
+    features:
+      - effort
+      - gantt
+      - kanban
+      - sprint
 
-  - incident:
-      price: 2.0
-      features:
-        - incident
+  incident:
+    price: 2.0
+    features:
+      - incident
 
-  - cmdb:
-      price: 2.0
-      features:
-        - actives
+  cmdb:
+    price: 2.0
+    features:
+      - actives
 
-  - security:
-      price: 2.0
-      features:
-        - vuln
-        - vulnlib
-        - risk
+  security:
+    price: 2.0
+    features:
+      - vuln
+      - vulnlib
+      - risk

@@ -43,15 +43,10 @@ public class JwtService {
 		// PLAN
 		claims.put("plan", user.getActualPlan().getType());
 
-		/* 
-        // TODO: add claims
-
-		// PLAN
-
 		// FEATURES
+		claims.put("features", user.getActiveFeatures());
 
-		// PROJECTS
-		*/
+		// TODO: PROJECTS
 
 		return generateToken(claims, user);
 	}

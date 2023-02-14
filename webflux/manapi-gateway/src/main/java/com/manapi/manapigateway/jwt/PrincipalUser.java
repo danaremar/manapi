@@ -30,7 +30,7 @@ public class PrincipalUser implements UserDetails {
 	public static PrincipalUser build(User user) {
 
 		// TODO: get authorities
-		List<GrantedAuthority> ls = List.of(new SimpleGrantedAuthority("PROJECTS"));
+		List<GrantedAuthority> ls = List.of(new SimpleGrantedAuthority("project"));
 
 		// transform to principal
 		PrincipalUser principalUser = new PrincipalUser();

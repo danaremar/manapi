@@ -11,10 +11,12 @@ import org.yaml.snakeyaml.Yaml;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public class Plan {
 
     @Value("${manapi.resource.plans}")
@@ -86,6 +88,7 @@ public class Plan {
 
         // cannot find file or expected plan -> DEFAULT
         } catch (Exception e) {
+            log.info("getPlan() - Exception happens when read plans config file: " + e.getMessage());
             plan = getDefaultPlan();
         }
 

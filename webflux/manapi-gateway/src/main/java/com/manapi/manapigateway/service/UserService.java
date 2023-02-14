@@ -106,6 +106,7 @@ public class UserService {
         jwtDto.setToken(jwt);
         jwtDto.setUsername(principalUser.getUsername());
         jwtDto.setAuthorities(principalUser.getAuthorities());
+        jwtDto.setFeatures(user.getActiveFeatures());
 
         return jwtDto;
     }
