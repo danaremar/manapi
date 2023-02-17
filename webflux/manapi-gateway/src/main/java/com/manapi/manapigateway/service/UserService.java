@@ -17,15 +17,17 @@ import reactor.core.publisher.Mono;
 
 import com.manapi.manapigateway.configuration.CustomPasswordEncoder;
 import com.manapi.manapigateway.configuration.ManapiMessages;
-import com.manapi.manapigateway.dto.UserCreateDto;
-import com.manapi.manapigateway.dto.UserLoginDto;
-import com.manapi.manapigateway.dto.UserShowDto;
+import com.manapi.manapigateway.dto.user.UserCreateDto;
+import com.manapi.manapigateway.dto.user.UserLoginDto;
+import com.manapi.manapigateway.dto.user.UserShowDto;
 import com.manapi.manapigateway.model.subscription.Subscription;
 import com.manapi.manapigateway.jwt.JwtService;
 import com.manapi.manapigateway.jwt.PrincipalUser;
 import com.manapi.manapigateway.jwt.JwtDto;
 
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import javax.validation.Valid;
 
 @Service
@@ -43,15 +45,48 @@ public class UserService {
     @Autowired
     CustomPasswordEncoder customPasswordEncoder;
 
-    // REACTIVE
+    /**
+     * Get username in reactive way
+     * 
+     * @return
+     */
     public Mono<String> getCurrentUsername() {
         return ReactiveSecurityContextHolder.getContext().map(x -> x.getAuthentication().getName());
     }
 
+    /**
+     * Get user in reactive way
+     * 
+     * @return
+     */
     public Mono<User> getCurrentUser() {
         return getCurrentUsername().map(this::findUserByUsername);
     }
 
+    /**
+     * Get username in Mvc way
+     * 
+     * @return
+     */
+    public String getCurrentUsernameMvc() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    /**
+     * Get user in Mvc way
+     * 
+     * @return
+     */
+    public User getCurrentUserMvc() {
+        return findUserByUsername(getCurrentUsernameMvc());
+    }
+
+    /**
+     * Find active user by id
+     * 
+     * @param id
+     * @return
+     */
     public User findUserById(String id) {
         User userExample = new User();
         userExample.setId(id);
@@ -60,6 +95,12 @@ public class UserService {
         return userRepository.findOne(example).orElse(null);
     }
 
+    /**
+     * Find active user by username
+     * 
+     * @param username
+     * @return
+     */
     public User findUserByUsername(String username) {
         User userExample = new User();
         userExample.setUsername(username);
@@ -68,6 +109,12 @@ public class UserService {
         return userRepository.findOne(example).orElse(null);
     }
 
+    /**
+     * Find active user by email
+     * 
+     * @param email
+     * @return
+     */
     public User findUserByEmail(String email) {
         User userExample = new User();
         userExample.setEmail(email);
@@ -76,6 +123,9 @@ public class UserService {
         return userRepository.findOne(example).orElse(null);
     }
 
+    /**
+     * @return view of the user
+     */
     public Mono<UserShowDto> showMyProfile() {
         return getCurrentUser().map(x -> modelMapper.map(x, UserShowDto.class));
     }
@@ -85,11 +135,17 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Get JwtDto when user perform login
+     * 
+     * @param userLoginDto
+     * @return
+     */
     @Transactional
     public JwtDto getJwtFromUser(UserLoginDto userLoginDto) {
 
         User user = findUserByUsername(userLoginDto.getUsername());
-        if(user == null) {
+        if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ManapiMessages.USER_NOT_FOUND_MESSAGE);
         }
         PrincipalUser principalUser = PrincipalUser.build(user);
@@ -111,11 +167,15 @@ public class UserService {
         return jwtDto;
     }
 
+    /**
+     * Add user
+     * @param userCreateDto
+     */
     @Transactional
     public void addUser(@Valid UserCreateDto userCreateDto) {
         User user = modelMapper.map(userCreateDto, User.class);
 
-        // TODO: check if duplicated username or duplicated email
+        // TODO: raise proper exception if duplicated username or email
 
         user.setPassword(this.customPasswordEncoder.encode(user.getPassword()));
         user.setActive(true);

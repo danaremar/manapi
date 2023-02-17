@@ -1,4 +1,4 @@
-package com.manapi.manapigateway.dto;
+package com.manapi.manapigateway.dto.user;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

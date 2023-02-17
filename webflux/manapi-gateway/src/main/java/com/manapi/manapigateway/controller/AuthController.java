@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.manapi.manapigateway.dto.UserCreateDto;
-import com.manapi.manapigateway.dto.UserLoginDto;
+
+import com.manapi.manapigateway.dto.user.UserCreateDto;
+import com.manapi.manapigateway.dto.user.UserLoginDto;
 import com.manapi.manapigateway.jwt.JwtDto;
 import com.manapi.manapigateway.service.UserService;
 import javax.validation.Valid;

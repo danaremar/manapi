@@ -1,0 +1,18 @@
+group = 'com.manapi.manapiproject'
+
+dependencies {
+
+    // SPRING
+    implementation 'org.springframework.boot:spring-boot-starter-jersey'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // BBDD -> SQL
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    // runtimeOnly 'com.h2database:h2:2.1.214'
+
+    // import dependencies from another project
+    // implementation project(':manapi-common')
+	
+}

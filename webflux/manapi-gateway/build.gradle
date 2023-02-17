@@ -1,24 +1,4 @@
-// SPRING BOOT 2
-plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.8'
-	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
-}
-
-// SPRING BOOT 3
-// plugins {
-// 	id 'java'
-// 	id 'org.springframework.boot' version '3.0.2'
-// 	id 'io.spring.dependency-management' version '1.1.0'
-// }
-
-group = 'com.manapi'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '19'
-
-repositories {
-	mavenCentral()
-}
+group = 'com.manapi.manapigateway'
 
 dependencies {
 
@@ -27,7 +7,6 @@ dependencies {
 	implementation'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.session:spring-session-core'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'	
 
 	// OTHERS
 	implementation 'org.modelmapper:modelmapper:3.1.1'
@@ -35,10 +14,6 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.14'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0'
-
-	// BBDD -> RDBMS
-	// implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	// runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
 	// BBDD -> NoSQL
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
@@ -50,8 +25,4 @@ dependencies {
 	// TEST
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
-}
-
-test {
-	useJUnitPlatform()
 }

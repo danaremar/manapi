@@ -1,20 +1,19 @@
-package com.manapi.manapigateway.dto;
-
-
-import org.hibernate.validator.constraints.Length;
+package com.manapi.manapigateway.dto.project;
 
 import javax.validation.constraints.NotBlank;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class UserUpdateDto extends UserCreateDto {
+public class ProjectUpdateDto extends ProjectCreateDto {
 
     @NotBlank
-	@Length(max = 50)
-    private String oldPassword;
+    private String id;
     
 }

@@ -2,24 +2,25 @@ package com.manapi.manapigateway.model.user;
 
 import com.manapi.manapigateway.model.subscription.Plan;
 import com.manapi.manapigateway.model.subscription.Subscription;
+import com.manapi.manapigateway.model.util.CrudEntity;
 
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@Document
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-
-    @Id
-    private String id;
+@EqualsAndHashCode(callSuper = true)
+public class User extends CrudEntity {
 
     @Indexed(unique = true)
     private String email;
@@ -34,12 +35,6 @@ public class User {
     private String password;
 
     private String country;
-
-    private Date creationDate;
-
-    private Date deleteDate;
-
-    private Boolean active;
 
     private Long failedRetries;
 
