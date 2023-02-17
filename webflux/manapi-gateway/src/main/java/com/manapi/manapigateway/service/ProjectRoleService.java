@@ -83,17 +83,18 @@ public class ProjectRoleService {
      * Update role
      * 
      * @param projectRoleUpdateDto
+     * @param projectRoleId
      * @throws UnauthorizedException
      */
     @Transactional
-    public void updateRole(ProjectRoleUpdateDto projectRoleUpdateDto) throws UnauthorizedException {
+    public void updateRole(ProjectRoleUpdateDto projectRoleUpdateDto, String projectRoleId) throws UnauthorizedException {
 
         // get project & verify permissions
-        Project project = findProjectFromProjectRoleId(projectRoleUpdateDto.getId());
+        Project project = findProjectFromProjectRoleId(projectRoleId);
         projectService.verifyOwnerOrAdmin(project);
 
         // delete project role from project
-        project.getProjectRoles().removeIf(x -> x.getId().equals(projectRoleUpdateDto.getId()));
+        project.getProjectRoles().removeIf(x -> x.getId().equals(projectRoleId));
 
         // update project role
         ProjectRole projectRole = new ProjectRole();

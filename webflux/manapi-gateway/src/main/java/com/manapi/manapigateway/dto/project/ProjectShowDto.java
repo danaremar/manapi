@@ -6,19 +6,15 @@ import com.manapi.manapigateway.dto.project_role.ProjectRoleShowDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectShowDto {
-
-    private Long id;
-
-	private String name;
-
-	private String description;
-
+@EqualsAndHashCode(callSuper = true)
+public class ProjectShowDto extends ProjectListDto {
+	
 	private List<ProjectRoleShowDto> projectRoles;
 
 }
