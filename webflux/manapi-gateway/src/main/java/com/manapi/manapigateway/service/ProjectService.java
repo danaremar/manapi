@@ -222,6 +222,7 @@ public class ProjectService {
 
         // create owner projectRole
         ProjectRole ownerProjectRole = new ProjectRole();
+        ownerProjectRole.setId(UUID.randomUUID().toString());
         ownerProjectRole.setCreationDate(new Date());
         ownerProjectRole.setAccepted(true);
         ownerProjectRole.setActive(true);
