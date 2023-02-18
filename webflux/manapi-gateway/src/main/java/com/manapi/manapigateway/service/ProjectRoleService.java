@@ -2,12 +2,17 @@ package com.manapi.manapigateway.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import reactor.core.publisher.Mono;
 
 import com.manapi.manapigateway.dto.project_role.ProjectRoleCreateDto;
 import com.manapi.manapigateway.dto.project_role.ProjectRoleNotAcceptedDto;
@@ -29,6 +34,9 @@ public class ProjectRoleService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     @Autowired(required = true)
     protected ModelMapper modelMapper;
 
@@ -37,126 +45,150 @@ public class ProjectRoleService {
      * 
      * @param projectRoleId
      * @return
-     * @throws UnauthorizedException
      */
-    private Project findProjectFromProjectRoleId(String projectRoleId) throws UnauthorizedException {
-        ProjectRole projectRoleExample = new ProjectRole();
-        projectRoleExample.setId(projectRoleId);
+    private Project findProjectFromProjectRoleId(String projectRoleId) {
+        Criteria criteria = Criteria.where("projectRoles.id").is(projectRoleId)
+                .and("projectRoles.accepted").is(true)
+                .and("projectRoles.active").is(true);
 
-        Project projectExample = new Project();
-        projectExample.setProjectRoles(List.of(projectRoleExample));
-        Example<Project> example = Example.of(projectExample);
-        return projectRepository.findOne(example).orElseThrow(() -> new UnauthorizedException());
+        Query query = new Query(criteria);
+        return mongoTemplate.findOne(query, Project.class);
+    }
+
+    /**
+     * Get project from a given project role id
+     * 
+     * @param projectRoleId
+     * @return
+     */
+    public List<Project> findProjectsByProjectUserId(String userId) {
+        Criteria criteria = Criteria.where("projectRoles.userId").is(userId)
+                .and("projectRoles.accepted").is(true)
+                .and("projectRoles.active").is(true);
+
+        Query query = new Query(criteria);
+        return mongoTemplate.find(query, Project.class);
+    }
+
+    /**
+     * Get project role mono by a given project role id
+     * 
+     * @param projectRoleId
+     * @return
+     */
+    private Mono<Project> getProjectMonoByProjectRoleId(String projectRoleId) {
+        return Mono.fromCallable(() -> findProjectFromProjectRoleId(projectRoleId))
+                .switchIfEmpty(Mono.error(new UnauthorizedException()));
     }
 
     /**
      * Create role
      * 
      * @param projectRoleCreateDto
-     * @throws UnauthorizedException
      */
     @Transactional
-    public void createRole(ProjectRoleCreateDto projectRoleCreateDto) throws UnauthorizedException {
+    public Mono<Void> createRole(ProjectRoleCreateDto projectRoleCreateDto) {
+        return projectService.getProjectMonoByProjectId(projectRoleCreateDto.getProjectId())
+                .flatMap(p -> projectService.verifyOwnerOrAdminMono(p).thenReturn(p))
+                .doOnNext(p -> {
+                    // create project role
+                    ProjectRole projectRole = new ProjectRole();
+                    projectRole.setId(UUID.randomUUID().toString());
+                    projectRole.setCreationDate(new Date());
+                    projectRole.setModificationDate(new Date());
+                    projectRole.setAccepted(false);
+                    projectRole.setActive(true);
+                    projectRole.setUserId(projectRoleCreateDto.getUserId());
+                    projectRole.setRole(projectRoleCreateDto.getRole());
 
-        // get project & verify permissions
-        Project project = projectService.findProjectById(projectRoleCreateDto.getProjectId());
-        projectService.verifyOwnerOrAdmin(project);
+                    // add project role to project
+                    p.getProjectRoles().add(projectRole);
 
-        // create project role
-        ProjectRole projectRole = new ProjectRole();
-        projectRole.setCreationDate(new Date());
-        projectRole.setModificationDate(new Date());
-        projectRole.setAccepted(false);
-        projectRole.setActive(true);
-        projectRole.setUserId(projectRoleCreateDto.getUserId());
-        projectRole.setRole(projectRoleCreateDto.getRole());
-
-        // add project role to project
-        project.getProjectRoles().add(projectRole);
-
-        // save project
-        projectRepository.save(project);
-
+                    // save project
+                    projectRepository.save(p);
+                })
+                .then();
     }
 
     /**
      * Update role
      * 
      * @param projectRoleUpdateDto
-     * @param projectRoleId
-     * @throws UnauthorizedException
+     * @param projectRoleId 
      */
     @Transactional
-    public void updateRole(ProjectRoleUpdateDto projectRoleUpdateDto, String projectRoleId) throws UnauthorizedException {
+    public Mono<Void> updateRole(ProjectRoleUpdateDto projectRoleUpdateDto, String projectRoleId) {
+        return getProjectMonoByProjectRoleId(projectRoleId)
+                .flatMap(p -> projectService.verifyOwnerOrAdminMono(p).thenReturn(p))
+                .doOnNext(p -> {
+                    // update project role
+                    ProjectRole projectRole = p.getProjectRoles().stream()
+                            .filter(x -> x.getId() != null && x.getId().equals(projectRoleId))
+                            .findFirst()
+                            .orElse(new ProjectRole());
+                    projectRole.setModificationDate(new Date());
+                    projectRole.setRole(projectRoleUpdateDto.getRole());
 
-        // get project & verify permissions
-        Project project = findProjectFromProjectRoleId(projectRoleId);
-        projectService.verifyOwnerOrAdmin(project);
+                    // delete project role from project
+                    p.getProjectRoles().removeIf(x -> x.getId().equals(projectRoleId));
 
-        // delete project role from project
-        project.getProjectRoles().removeIf(x -> x.getId().equals(projectRoleId));
+                    // add project role to project
+                    p.getProjectRoles().add(projectRole);
 
-        // update project role
-        ProjectRole projectRole = new ProjectRole();
-        projectRole.setModificationDate(new Date());
-        projectRole.setRole(projectRoleUpdateDto.getRole());
-
-        // add project role to project
-        project.getProjectRoles().add(projectRole);
-
-        // save project
-        projectRepository.save(project);
-
+                    // save project
+                    projectRepository.save(p);
+                })
+                .then();
     }
 
     /**
      * Accept project invitation
      * 
      * @param projectRoleId
-     * @throws UnauthorizedException
      */
     @Transactional
-    public void acceptProjectRole(String projectRoleId) throws UnauthorizedException {
+    public Mono<Void> acceptProjectRole(String projectRoleId) {
+        return getProjectMonoByProjectRoleId(projectRoleId)
+                .flatMap(p -> projectService.verifyUserRelatedWithProjectMono(p).thenReturn(p))
+                .doOnNext(p -> {
 
-        // get project & verify permissions
-        Project project = findProjectFromProjectRoleId(projectRoleId);
-        projectService.verifyOwnerOrAdmin(project);
+                    // update project role
+                    ProjectRole projectRole = p.getProjectRoles().stream()
+                            .filter(x -> x.getId() != null && x.getId().equals(projectRoleId))
+                            .findFirst()
+                            .orElse(new ProjectRole());
+                    projectRole.setModificationDate(new Date());
+                    projectRole.setAccepted(true);
 
-        // delete project role from project
-        project.getProjectRoles().removeIf(x -> x.getId().equals(projectRoleId));
+                    // delete project role from project
+                    p.getProjectRoles().removeIf(x -> x.getId().equals(projectRoleId));
 
-        // update project role
-        ProjectRole projectRole = new ProjectRole();
-        projectRole.setModificationDate(new Date());
-        projectRole.setAccepted(true);
+                    // add project role to project
+                    p.getProjectRoles().add(projectRole);
 
-        // add project role to project
-        project.getProjectRoles().add(projectRole);
-
-        // save project
-        projectRepository.save(project);
-
+                    // save project
+                    projectRepository.save(p);
+                })
+                .then();
     }
 
     /**
      * Delete project role, used when user denies the invitation
      * 
      * @param projectRoleId
-     * @throws UnauthorizedException
      */
     @Transactional
-    public void deleteProjectRole(String projectRoleId) throws UnauthorizedException {
+    public Mono<Void> deleteProjectRole(String projectRoleId) {
+        return getProjectMonoByProjectRoleId(projectRoleId)
+                .flatMap(p -> projectService.verifyUserRelatedWithProjectMono(p).thenReturn(p))
+                .doOnNext(p -> {
+                    // delete project role from project
+                    p.getProjectRoles().removeIf(x -> x.getId().equals(projectRoleId));
 
-        // get project & verify permissions
-        Project project = findProjectFromProjectRoleId(projectRoleId);
-        projectService.verifyOwnerOrAdmin(project);
-
-        // delete project role from project
-        project.getProjectRoles().removeIf(x -> x.getId().equals(projectRoleId));
-
-        // save project
-        projectRepository.save(project);
-
+                    // save project
+                    projectRepository.save(p);
+                })
+                .then();
     }
 
     /**
@@ -178,23 +210,20 @@ public class ProjectRoleService {
      * 
      * @return
      */
-    public List<ProjectRoleNotAcceptedDto> getAllInvitationsFromActualUser() {
+    @Transactional
+    public Mono<List<ProjectRoleNotAcceptedDto>> getAllInvitationsFromActualUser() {
+        return userService.getCurrentUser().map(u -> {
 
-        String userId = userService.getCurrentUserMvc().getId();
+            // get id from user
+            String userId = u.getId();
 
-        // example matcher
-        ProjectRole projectRoleExample = new ProjectRole();
-        projectRoleExample.setUserId(userId);
-        Project projectExample = new Project();
-        projectExample.setProjectRoles(List.of(projectRoleExample));
-        Example<Project> example = Example.of(projectExample);
+            // get list of projects
+            List<Project> ls = findProjectsByProjectUserId(userId);
 
-        // get list of projects
-        List<Project> ls = projectRepository.findAll(example);
-        
-        return ls.stream()
-            .flatMap(p -> getProjectRolesNotAceptedByParams(p,userId).stream())
-            .toList();
+            return ls.stream()
+                    .flatMap(p -> getProjectRolesNotAceptedByParams(p, userId).stream())
+                    .toList();
+        });
     }
 
 }

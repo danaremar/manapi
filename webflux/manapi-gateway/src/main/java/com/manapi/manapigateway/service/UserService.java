@@ -26,8 +26,6 @@ import com.manapi.manapigateway.jwt.PrincipalUser;
 import com.manapi.manapigateway.jwt.JwtDto;
 
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import javax.validation.Valid;
 
 @Service
@@ -61,24 +59,6 @@ public class UserService {
      */
     public Mono<User> getCurrentUser() {
         return getCurrentUsername().map(this::findUserByUsername);
-    }
-
-    /**
-     * Get username in Mvc way
-     * 
-     * @return
-     */
-    public String getCurrentUsernameMvc() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
-    }
-
-    /**
-     * Get user in Mvc way
-     * 
-     * @return
-     */
-    public User getCurrentUserMvc() {
-        return findUserByUsername(getCurrentUsernameMvc());
     }
 
     /**

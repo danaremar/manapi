@@ -45,7 +45,7 @@ public class ProjectController {
 
     @PostMapping(value = "/")
     public ResponseEntity<Object> createProject(@RequestBody @Valid ProjectCreateDto projectCreateDto) {
-        var p = projectService.createProject(projectCreateDto);
+        var p = projectService.createProjectFromMono(projectCreateDto);
         return new ResponseEntity<>(p, HttpStatus.CREATED);
     }
 

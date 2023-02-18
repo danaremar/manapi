@@ -42,21 +42,6 @@ public class ProjectService {
     protected ModelMapper modelMapper;
 
     /**
-     * Check if user is allowed to perform an operation
-     * 
-     * @param project
-     * @param roles   -> list of allowed roles
-     * @throws UnauthorizedException
-     */
-    private void verify(Project project, List<Integer> roles) throws UnauthorizedException {
-        User user = userService.getCurrentUserMvc();
-        if (project == null || user == null || !project.getActive() || project.getProjectRoles().stream()
-                .noneMatch(x -> roles.contains(x.getRole()) && x.getUserId().equals(user.getId()))) {
-            throw new UnauthorizedException();
-        }
-    }
-
-    /**
      * Check if user is allowed to perform an operation with Mono
      * 
      * @param project
@@ -72,32 +57,12 @@ public class ProjectService {
     }
 
     /**
-     * Check if user is owner
-     * 
-     * @param project
-     * @throws UnauthorizedException
-     */
-    public void verifyOwner(Project project) throws UnauthorizedException {
-        verify(project, List.of(0));
-    }
-
-    /**
      * Check if user is owner with Mono
      * 
      * @param project
      */
     public Mono<Void> verifyOwnerMono(Project project) {
         return verifyMono(project, List.of(0));
-    }
-
-    /**
-     * Check if user is owner or admin
-     * 
-     * @param project
-     * @throws UnauthorizedException
-     */
-    public void verifyOwnerOrAdmin(Project project) throws UnauthorizedException {
-        verify(project, List.of(0, 1));
     }
 
     /**
@@ -110,32 +75,12 @@ public class ProjectService {
     }
 
     /**
-     * Check if user is not visitor
-     * 
-     * @param project
-     * @throws UnauthorizedException
-     */
-    public void verifyMember(Project project) throws UnauthorizedException {
-        verify(project, List.of(0, 1, 2));
-    }
-
-    /**
      * Check if user is not visitor with Mono
      * 
      * @param project
      */
     public Mono<Void> verifyMemberMono(Project project) {
         return verifyMono(project, List.of(0, 1, 2));
-    }
-
-    /**
-     * Check if it's contained in the project
-     * 
-     * @param project
-     * @throws UnauthorizedException
-     */
-    public void verifyUserRelatedWithProject(Project project) throws UnauthorizedException {
-        verify(project, List.of(0, 1, 2, 3));
     }
 
     /**
@@ -213,7 +158,17 @@ public class ProjectService {
         return ls.stream()
                 .map(p -> modelMapper.map(p, ProjectListDto.class))
                 .toList();
+    }
 
+    /**
+     * Create project from mono
+     * 
+     * @param projectCreateDto
+     * @return
+     */
+    @Transactional
+    public Mono<ProjectShowDto> createProjectFromMono(ProjectCreateDto projectCreateDto) {
+        return userService.getCurrentUser().map(u -> createProject(projectCreateDto, u));
     }
 
     /**
@@ -222,8 +177,7 @@ public class ProjectService {
      * @param projectCreateDto
      * @return
      */
-    @Transactional
-    public ProjectShowDto createProject(ProjectCreateDto projectCreateDto) {
+    public ProjectShowDto createProject(ProjectCreateDto projectCreateDto, User user) {
 
         // create project properties
         Project project = modelMapper.map(projectCreateDto, Project.class);
@@ -238,7 +192,7 @@ public class ProjectService {
         ownerProjectRole.setAccepted(true);
         ownerProjectRole.setActive(true);
         ownerProjectRole.setRole(0);
-        ownerProjectRole.setUserId(userService.getCurrentUserMvc().getId());
+        ownerProjectRole.setUserId(user.getId());
         ownerProjectRole.setModificationDate(new Date());
 
         // add owner to project
@@ -258,7 +212,7 @@ public class ProjectService {
     public Mono<ProjectShowDto> updateProject(ProjectCreateDto projectUpdateDto, String projectId) {
 
         return getProjectMonoByProjectId(projectId)
-                .flatMap(project -> verifyOwnerOrAdminMono(project).thenReturn(project))
+                .flatMap(project -> verifyOwnerMono(project).thenReturn(project))
                 .map(p -> {
 
                     // set new properties
@@ -273,7 +227,6 @@ public class ProjectService {
                     return modelMapper.map(projectSaved, ProjectShowDto.class);
 
                 });
-
     }
 
     /**
@@ -284,8 +237,7 @@ public class ProjectService {
     @Transactional
     public Mono<Void> disableProject(String projectId) {
         return getProjectMonoByProjectId(projectId)
-                .flatMap(project -> verifyOwnerOrAdminMono(project)
-                        .thenReturn(project))
+                .flatMap(project -> verifyOwnerMono(project).thenReturn(project))
                 .doOnNext(p -> {
                     p.setDeleteDate(new Date());
                     p.setActive(false);
