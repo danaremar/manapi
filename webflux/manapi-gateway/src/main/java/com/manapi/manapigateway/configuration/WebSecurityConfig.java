@@ -35,16 +35,15 @@ public class WebSecurityConfig {
         authenticationWebFilter.setServerAuthenticationConverter(jwtAuthenticationConverter);
 
 		return http
-				.csrf()
-					.disable()
+				.csrf().disable()
 				.authorizeExchange()
 					.pathMatchers("/login", "/register", "/v3/*", "/configuration/ui",
 							"/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/swagger-ui/*",
 							"/webjars/**", "/resources/**")
 						.permitAll()
 					.anyExchange()
-						.permitAll()
-						// .authenticated()
+						// .permitAll()
+						.authenticated()
 				.and()
 					.exceptionHandling()
 						.authenticationEntryPoint((exchange, e) -> 

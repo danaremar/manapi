@@ -122,6 +122,35 @@ public class ProjectService {
      * @param pageable
      * @return
      */
+    public List<ProjectListDto> getAllProjectsFromUser() {
+
+        // example
+        ProjectRole projectRoleExample = new ProjectRole();
+        projectRoleExample.setUserId(userService.getCurrentUserMvc().getId());
+        projectRoleExample.setActive(true);
+        projectRoleExample.setAccepted(true);
+        Project projectExample = new Project();
+        projectExample.setProjectRoles(List.of(projectRoleExample));
+
+        // matcher & example
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example<Project> example = Example.of(projectExample, matcher);
+
+        // find
+        return projectRepository.findAll(example).stream()
+                .map(p -> modelMapper.map(p, ProjectListDto.class))
+                .toList();
+
+    }
+
+    /**
+     * Get all projects from user
+     * 
+     * @param pageable
+     * @return
+     */
     public Page<ProjectListDto> getAllProjectsFromUser(Pageable pageable) {
 
         // example
@@ -207,7 +236,7 @@ public class ProjectService {
      */
     @Transactional
     public void disableProject(String projectId) throws UnauthorizedException {
-        
+
         // get previous project
         Project project = findProjectById(projectId);
 

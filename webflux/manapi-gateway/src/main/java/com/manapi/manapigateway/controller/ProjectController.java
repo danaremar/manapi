@@ -1,9 +1,9 @@
 package com.manapi.manapigateway.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +43,8 @@ public class ProjectController {
     }
 
     @GetMapping(value = "/all")
-    public ResponseEntity<Object> getAllMyProjects(Pageable pageable) {
-        Page<ProjectListDto> p = projectService.getAllProjectsFromUser(pageable);
+    public ResponseEntity<Object> getAllMyProjects() {
+        List<ProjectListDto> p = projectService.getAllProjectsFromUser();
         return new ResponseEntity<>(p, HttpStatus.OK);
     }
 
