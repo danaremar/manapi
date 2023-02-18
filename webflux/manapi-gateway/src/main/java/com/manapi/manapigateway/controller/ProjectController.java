@@ -1,7 +1,5 @@
 package com.manapi.manapigateway.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.manapi.manapigateway.dto.project.ProjectCreateDto;
-import com.manapi.manapigateway.dto.project.ProjectListDto;
-import com.manapi.manapigateway.dto.project.ProjectShowDto;
-import com.manapi.manapigateway.exception.UnauthorizedException;
 import com.manapi.manapigateway.service.ProjectService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/project")
@@ -38,33 +32,33 @@ public class ProjectController {
     ProjectService projectService;
 
     @GetMapping(value = "/{projectId}")
-    public ResponseEntity<Object> getProjectById(@PathVariable String projectId) throws UnauthorizedException {
-        ProjectShowDto p = projectService.getProject(projectId);
+    public ResponseEntity<Object> getProjectById(@PathVariable String projectId) {
+        var p = projectService.getProjectWithAuth(projectId);
         return new ResponseEntity<>(p, HttpStatus.OK);
     }
 
     @GetMapping(value = "/all")
     public ResponseEntity<Object> getAllMyProjects() {
-        Mono<List<ProjectListDto>> p = projectService.getAllProjectsFromUser();
+        var p = projectService.getAllProjectsFromUser();
         return new ResponseEntity<>(p, HttpStatus.OK);
     }
 
     @PostMapping(value = "/")
     public ResponseEntity<Object> createProject(@RequestBody @Valid ProjectCreateDto projectCreateDto) {
-        ProjectShowDto p = projectService.createProject(projectCreateDto);
+        var p = projectService.createProject(projectCreateDto);
         return new ResponseEntity<>(p, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{projectId}")
-    public ResponseEntity<Object> updateProject(@RequestBody @Valid ProjectCreateDto projectCreateDto, @PathVariable String projectId) throws UnauthorizedException {
-        ProjectShowDto p = projectService.updateProject(projectCreateDto, projectId);
+    public ResponseEntity<Object> updateProject(@RequestBody @Valid ProjectCreateDto projectCreateDto, @PathVariable String projectId) {
+        var p = projectService.updateProject(projectCreateDto, projectId);
         return new ResponseEntity<>(p, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{projectId}")
-    public ResponseEntity<Object> disableProject(@PathVariable String projectId) throws UnauthorizedException {
-        projectService.disableProject(projectId);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Object> disableProject(@PathVariable String projectId) {
+        var p = projectService.disableProject(projectId);
+        return new ResponseEntity<>(p, HttpStatus.OK);
     }
     
 }

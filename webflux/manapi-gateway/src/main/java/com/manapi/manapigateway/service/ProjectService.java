@@ -3,18 +3,12 @@ package com.manapi.manapigateway.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,8 +64,8 @@ public class ProjectService {
      */
     public Mono<Void> verifyMono(Project project, List<Integer> roles) {
         return userService.getCurrentUser()
-                .filter(user -> project != null && project.getActive() && project.getProjectRoles().stream()
-                        .anyMatch(x -> roles.contains(x.getRole()) && x.getUserId().equals(user.getId())))
+                .filter(user -> (project != null && project.getActive() && project.getProjectRoles().stream()
+                        .anyMatch(x -> roles.contains(x.getRole()) && x.getUserId().equals(user.getId()))))
                 .switchIfEmpty(Mono.error(new UnauthorizedException()))
                 .then();
     }
@@ -173,10 +167,11 @@ public class ProjectService {
      * @return
      * @throws UnauthorizedException
      */
-    public ProjectShowDto getProject(String projectId) throws UnauthorizedException {
-        Project project = findProjectById(projectId);
-        verifyUserRelatedWithProject(project);
-        return modelMapper.map(project, ProjectShowDto.class);
+    public Mono<ProjectShowDto> getProjectWithAuth(String projectId) {
+        return Mono.fromCallable(() -> findProjectById(projectId))
+                .flatMap(project -> verifyUserRelatedWithProjectMono(project)
+                        .thenReturn(project))
+                .map(x -> modelMapper.map(x, ProjectShowDto.class));
     }
 
     /**
@@ -247,22 +242,26 @@ public class ProjectService {
      * 
      * @param projectCreateDto
      * @return
-     * @throws UnauthorizedException
      */
-    public ProjectShowDto updateProject(ProjectCreateDto projectCreateDto, String projectId)
-            throws UnauthorizedException {
+    public Mono<ProjectShowDto> updateProject(ProjectCreateDto projectUpdateDto, String projectId) {
 
-        // get project & set new properties
-        Project project = findProjectById(projectId);
-        project.setName(projectCreateDto.getName());
-        project.setDescription(projectCreateDto.getDescription());
+        return Mono.fromCallable(() -> findProjectById(projectId))
+                .flatMap(project -> verifyOwnerOrAdminMono(project)
+                        .thenReturn(project))
+                .map(p -> {
 
-        // check permissions
-        verifyOwnerOrAdmin(project);
+                    // set new properties
+                    p.setName(projectUpdateDto.getName());
+                    p.setDescription(projectUpdateDto.getDescription());
 
-        // save & return project
-        Project projectSaved = projectRepository.save(project);
-        return modelMapper.map(projectSaved, ProjectShowDto.class);
+                    // set modified date
+                    p.setModificationDate(new Date());
+
+                    // save & return
+                    Project projectSaved = projectRepository.save(p);
+                    return modelMapper.map(projectSaved, ProjectShowDto.class);
+
+                });
 
     }
 
@@ -270,24 +269,19 @@ public class ProjectService {
      * Disable project, not to delete
      * 
      * @param projectId
-     * @throws UnauthorizedException
      */
     @Transactional
-    public void disableProject(String projectId) throws UnauthorizedException {
-
-        // get previous project
-        Project project = findProjectById(projectId);
-
-        // permissions
-        verifyOwnerOrAdmin(project);
-
-        // update
-        project.setDeleteDate(new Date());
-        project.setActive(false);
-        project.setModificationDate(new Date());
-
-        // save
-        projectRepository.save(project);
+    public Mono<Void> disableProject(String projectId) {
+        return Mono.fromCallable(() -> findProjectById(projectId))
+                .flatMap(project -> verifyOwnerOrAdminMono(project)
+                        .thenReturn(project))
+                .doOnNext(p -> {
+                    p.setDeleteDate(new Date());
+                    p.setActive(false);
+                    p.setModificationDate(new Date());
+                    projectRepository.save(p);
+                })
+                .then();
     }
 
 }
