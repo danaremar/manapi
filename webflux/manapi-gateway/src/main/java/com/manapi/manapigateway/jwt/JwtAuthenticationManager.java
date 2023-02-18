@@ -29,8 +29,8 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
                 .switchIfEmpty(Mono.empty())
                 .map(x -> {
 
-                    String username = jwtService.getUsernameFromToken(token);
-                    User user = userService.findUserByUsername(username);
+                    String userId = jwtService.getUserIdFromToken(token);
+                    User user = userService.findUserById(userId);
                     PrincipalUser principalUser = PrincipalUser.build(user);
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(principalUser,
                             null,

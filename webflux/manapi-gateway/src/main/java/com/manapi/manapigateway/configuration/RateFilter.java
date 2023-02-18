@@ -97,10 +97,10 @@ public class RateFilter implements WebFilter {
 
             // get username
             String token = lsHeadersAuth.get(0).replace("Bearer ", "");
-            String username = jwtService.getUsernameFromToken(token);
+            String userId = jwtService.getUserIdFromToken(token);
 
             // consume 1 token
-            Bucket bucket = resolveBucket(username);
+            Bucket bucket = resolveBucket(userId);
             ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
 
             // check if can be consumed

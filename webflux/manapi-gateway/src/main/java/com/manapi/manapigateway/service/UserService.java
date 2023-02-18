@@ -35,7 +35,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    JwtService jwtService;
+    private JwtService jwtService;
 
     @Autowired(required = true)
     protected ModelMapper modelMapper;

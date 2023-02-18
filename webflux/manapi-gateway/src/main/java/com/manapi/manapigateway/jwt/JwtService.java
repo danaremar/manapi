@@ -21,7 +21,7 @@ import com.manapi.manapigateway.configuration.ManapiMessages;
 @Component
 public class JwtService {
 
-    private final Logger log = LoggerFactory.getLogger(JwtService.class);
+	private final Logger log = LoggerFactory.getLogger(JwtService.class);
 
 	@Value("${manapi.security.jwt.secret}")
 	private String secret;
@@ -29,14 +29,35 @@ public class JwtService {
 	@Value("${manapi.security.jwt.expiration}")
 	private Long expiration;
 
+	// @Autowired
+	// private ProjectRoleService projectRoleService;
+
+	/**
+	 * Get all claims from token (claims is all properties set up bearer token)
+	 * 
+	 * @param token
+	 * @return
+	 */
 	public Claims getClaimsFromToken(String token) {
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
 
-	public String getUsernameFromToken(String token) {
+	/**
+	 * Get user id from bearer token
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public String getUserIdFromToken(String token) {
 		return getClaimsFromToken(token).getSubject();
 	}
 
+	/**
+	 * Generate JWT bearer token by user with default claims
+	 * 
+	 * @param user
+	 * @return
+	 */
 	public String generateToken(User user) {
 		Map<String, Object> claims = new HashMap<>();
 
@@ -47,20 +68,34 @@ public class JwtService {
 		claims.put("features", user.getActiveFeatures());
 
 		// TODO: PROJECTS
+		// claims.put("projects", projectRoleService.findProjectsByProjectUserId(user.getId()));
 
 		return generateToken(claims, user);
 	}
 
+	/**
+	 * Generate JWT bearer token by adding new claims
+	 * 
+	 * @param extraClaims
+	 * @param user
+	 * @return
+	 */
 	public String generateToken(Map<String, Object> extraClaims, User user) {
 		return Jwts.builder()
 				.setClaims(extraClaims)
-				.setSubject(user.getUsername())
+				.setSubject(user.getId())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 1000 * expiration))
 				.signWith(SignatureAlgorithm.HS512, secret)
 				.compact();
 	}
 
+	/**
+	 * Validate if token is correct
+	 * 
+	 * @param token
+	 * @return
+	 */
 	public boolean validateToken(String token) {
 		try {
 			Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
@@ -73,5 +108,5 @@ public class JwtService {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ManapiMessages.TOKEN_BAD_FORMAT);
 		}
 	}
-    
+
 }
