@@ -162,6 +162,17 @@ public class ProjectService {
     }
 
     /**
+     * Get project role mono by a given project id
+     * 
+     * @param projectRoleId
+     * @return
+     */
+    public Mono<Project> getProjectMonoByProjectId(String projectId) {
+        return Mono.fromCallable(() -> findProjectById(projectId))
+                .switchIfEmpty(Mono.error(new UnauthorizedException()));
+    }
+
+    /**
      * Get project from id, checks permissions
      * 
      * @param projectId
@@ -169,9 +180,8 @@ public class ProjectService {
      * @throws UnauthorizedException
      */
     public Mono<ProjectShowDto> getProjectWithAuth(String projectId) {
-        return Mono.fromCallable(() -> findProjectById(projectId))
-                .flatMap(project -> verifyUserRelatedWithProjectMono(project)
-                        .thenReturn(project))
+        return getProjectMonoByProjectId(projectId)
+                .flatMap(project -> verifyUserRelatedWithProjectMono(project).thenReturn(project))
                 .map(x -> modelMapper.map(x, ProjectShowDto.class));
     }
 
@@ -247,9 +257,8 @@ public class ProjectService {
      */
     public Mono<ProjectShowDto> updateProject(ProjectCreateDto projectUpdateDto, String projectId) {
 
-        return Mono.fromCallable(() -> findProjectById(projectId))
-                .flatMap(project -> verifyOwnerOrAdminMono(project)
-                        .thenReturn(project))
+        return getProjectMonoByProjectId(projectId)
+                .flatMap(project -> verifyOwnerOrAdminMono(project).thenReturn(project))
                 .map(p -> {
 
                     // set new properties
@@ -274,7 +283,7 @@ public class ProjectService {
      */
     @Transactional
     public Mono<Void> disableProject(String projectId) {
-        return Mono.fromCallable(() -> findProjectById(projectId))
+        return getProjectMonoByProjectId(projectId)
                 .flatMap(project -> verifyOwnerOrAdminMono(project)
                         .thenReturn(project))
                 .doOnNext(p -> {
