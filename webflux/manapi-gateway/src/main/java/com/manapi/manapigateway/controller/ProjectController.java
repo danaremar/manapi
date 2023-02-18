@@ -25,6 +25,7 @@ import com.manapi.manapigateway.service.ProjectService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/project")
@@ -44,7 +45,7 @@ public class ProjectController {
 
     @GetMapping(value = "/all")
     public ResponseEntity<Object> getAllMyProjects() {
-        List<ProjectListDto> p = projectService.getAllProjectsFromUser();
+        Mono<List<ProjectListDto>> p = projectService.getAllProjectsFromUser();
         return new ResponseEntity<>(p, HttpStatus.OK);
     }
 

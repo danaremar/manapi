@@ -3,6 +3,7 @@ package com.manapi.manapigateway.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -11,9 +12,17 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.manapi.manapigateway.repository.ProjectRepository;
+
+import reactor.core.publisher.Mono;
+
 import com.manapi.manapigateway.model.user.User;
 import com.manapi.manapigateway.model.project.ProjectRole;
 import com.manapi.manapigateway.dto.project.ProjectCreateDto;
@@ -30,6 +39,9 @@ public class ProjectService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired(required = true)
     protected ModelMapper modelMapper;
@@ -50,6 +62,21 @@ public class ProjectService {
     }
 
     /**
+     * Check if user is allowed to perform an operation with Mono
+     * 
+     * @param project
+     * @param roles   -> list of allowed roles
+     * @throws UnauthorizedException
+     */
+    public Mono<Void> verifyMono(Project project, List<Integer> roles) {
+        return userService.getCurrentUser()
+                .filter(user -> project != null && project.getActive() && project.getProjectRoles().stream()
+                        .anyMatch(x -> roles.contains(x.getRole()) && x.getUserId().equals(user.getId())))
+                .switchIfEmpty(Mono.error(new UnauthorizedException()))
+                .then();
+    }
+
+    /**
      * Check if user is owner
      * 
      * @param project
@@ -57,6 +84,15 @@ public class ProjectService {
      */
     public void verifyOwner(Project project) throws UnauthorizedException {
         verify(project, List.of(0));
+    }
+
+    /**
+     * Check if user is owner with Mono
+     * 
+     * @param project
+     */
+    public Mono<Void> verifyOwnerMono(Project project) {
+        return verifyMono(project, List.of(0));
     }
 
     /**
@@ -70,6 +106,15 @@ public class ProjectService {
     }
 
     /**
+     * Check if user is owner or admin with Mono
+     * 
+     * @param project
+     */
+    public Mono<Void> verifyOwnerOrAdminMono(Project project) {
+        return verifyMono(project, List.of(0, 1));
+    }
+
+    /**
      * Check if user is not visitor
      * 
      * @param project
@@ -80,6 +125,15 @@ public class ProjectService {
     }
 
     /**
+     * Check if user is not visitor with Mono
+     * 
+     * @param project
+     */
+    public Mono<Void> verifyMemberMono(Project project) {
+        return verifyMono(project, List.of(0, 1, 2));
+    }
+
+    /**
      * Check if it's contained in the project
      * 
      * @param project
@@ -87,6 +141,15 @@ public class ProjectService {
      */
     public void verifyUserRelatedWithProject(Project project) throws UnauthorizedException {
         verify(project, List.of(0, 1, 2, 3));
+    }
+
+    /**
+     * Check if it's contained in the project with Mono
+     * 
+     * @param project
+     */
+    public Mono<Void> verifyUserRelatedWithProjectMono(Project project) {
+        return verifyMono(project, List.of(0, 1, 2, 3));
     }
 
     /**
@@ -117,32 +180,12 @@ public class ProjectService {
     }
 
     /**
-     * Get all projects from user
+     * Get all projects from user using mono
      * 
-     * @param pageable
      * @return
      */
-    public List<ProjectListDto> getAllProjectsFromUser() {
-
-        // example
-        ProjectRole projectRoleExample = new ProjectRole();
-        projectRoleExample.setUserId(userService.getCurrentUserMvc().getId());
-        projectRoleExample.setActive(true);
-        projectRoleExample.setAccepted(true);
-        Project projectExample = new Project();
-        projectExample.setProjectRoles(List.of(projectRoleExample));
-
-        // matcher & example
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withIgnoreCase()
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-        Example<Project> example = Example.of(projectExample, matcher);
-
-        // find
-        return projectRepository.findAll(example).stream()
-                .map(p -> modelMapper.map(p, ProjectListDto.class))
-                .toList();
-
+    public Mono<List<ProjectListDto>> getAllProjectsFromUser() {
+        return userService.getCurrentUser().map(this::getAllProjectsFromUser);
     }
 
     /**
@@ -151,25 +194,19 @@ public class ProjectService {
      * @param pageable
      * @return
      */
-    public Page<ProjectListDto> getAllProjectsFromUser(Pageable pageable) {
+    public List<ProjectListDto> getAllProjectsFromUser(User u) {
 
-        // example
-        ProjectRole projectRoleExample = new ProjectRole();
-        projectRoleExample.setUserId(userService.getCurrentUserMvc().getId());
-        projectRoleExample.setActive(true);
-        projectRoleExample.setAccepted(true);
-        Project projectExample = new Project();
-        projectExample.setProjectRoles(List.of(projectRoleExample));
+        // filter inside projectRoles by userId, accepted & active
+        Criteria criteria = Criteria.where("projectRoles.userId").is(u.getId())
+                .and("projectRoles.accepted").is(true)
+                .and("projectRoles.active").is(true);
+        Query query = new Query(criteria);
 
-        // matcher & example
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withIgnoreCase()
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-        Example<Project> example = Example.of(projectExample, matcher);
-
-        // find
-        Page<Project> projectPage = projectRepository.findAll(example, pageable);
-        return projectPage.map(p -> modelMapper.map(p, ProjectListDto.class));
+        // return & map
+        List<Project> ls = mongoTemplate.find(query, Project.class);
+        return ls.stream()
+                .map(p -> modelMapper.map(p, ProjectListDto.class))
+                .toList();
 
     }
 
@@ -192,6 +229,7 @@ public class ProjectService {
         ProjectRole ownerProjectRole = new ProjectRole();
         ownerProjectRole.setCreationDate(new Date());
         ownerProjectRole.setAccepted(true);
+        ownerProjectRole.setActive(true);
         ownerProjectRole.setRole(0);
         ownerProjectRole.setUserId(userService.getCurrentUserMvc().getId());
         ownerProjectRole.setModificationDate(new Date());
