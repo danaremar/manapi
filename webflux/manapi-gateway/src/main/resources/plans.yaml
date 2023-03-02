@@ -2,11 +2,13 @@ plans:
   free:
     cost: 0.0
     rate: 5
-    rateunit: 1
+    rateunit: 60
     quota: 100
     quotaunit: 60
-    limits:
+    domain-limits:
       projects: 2
+    featuregroups:
+      - project
 
   premium:
     cost: 3.0
@@ -14,8 +16,13 @@ plans:
     rateunit: 1
     quota: 200
     quotaunit: 60
-    limits:
+    domain-limits:
       projects: 50
+    featuregroups:
+      - project
+      - incident
+      - cmdb
+      - security
 
   enterprise:
     cost: 18.0
@@ -23,31 +30,28 @@ plans:
     rateunit: 1
     quota: 2000
     quotaunit: 60
-    limits:
+    domain-limits:
       projects: 500
+    featuregroups:
+      - project
+      - incident
+      - cmdb
+      - security
 
 featuregroups:
   project:
-    price: 0.0
-    features:
-      - effort
-      - gantt
-      - kanban
-      - sprint
+    - effort
+    - gantt
+    - kanban
+    - sprint
 
   incident:
-    price: 2.0
-    features:
-      - incident
+    - incident
 
   cmdb:
-    price: 2.0
-    features:
-      - actives
+    - actives
 
   security:
-    price: 2.0
-    features:
-      - vuln
-      - vulnlib
-      - risk
+    - vuln
+    - vulnlib
+    - risk

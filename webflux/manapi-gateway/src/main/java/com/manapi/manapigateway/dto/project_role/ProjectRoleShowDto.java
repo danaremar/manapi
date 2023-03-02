@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProjectRoleShowDto {
 
+    private String id;
+
     private String userId;
 
     private Integer role;
