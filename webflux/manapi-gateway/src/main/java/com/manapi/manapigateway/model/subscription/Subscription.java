@@ -63,7 +63,7 @@ public class Subscription {
             InputStream inputStream = new FileInputStream(pathPlan);
             Map<String, Object> yamlMap = yaml.load(inputStream);
             LinkedHashMap yamlFeatGroups = (LinkedHashMap) yamlMap.get("featuregroups");
-            ls = (List<String>) yamlFeatGroups.get(group);        
+            ls = (List<String>) yamlFeatGroups.get(group);
         
         // cannot find file or expected feature group -> empty list
         } catch (Exception e) {
