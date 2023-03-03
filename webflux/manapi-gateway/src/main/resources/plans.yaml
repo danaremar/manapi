@@ -2,7 +2,7 @@ plans:
   free:
     cost: 0.0
     rate: 5
-    rateunit: 60
+    rateunit: 1
     quota: 100
     quotaunit: 60
     domain-limits:
