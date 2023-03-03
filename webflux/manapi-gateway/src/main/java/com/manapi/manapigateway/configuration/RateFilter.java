@@ -51,25 +51,25 @@ public class RateFilter implements WebFilter {
     }
 
     /**
-     * Total unregistered users
+     * Total unregistered users: RATE -> 2 req/sec
      * 
      * @return bucket
      */
     private Bucket withoutUser() {
         return Bucket.builder()
-                .addLimit(Bandwidth.classic(5L, Refill.intervally(10, Duration.ofMinutes(1))))
+                .addLimit(Bandwidth.classic(2L, Refill.intervally(10, Duration.ofSeconds(1))))
                 .build();
     }
 
     /**
      * Create new {@link Bucket} with rate & quota by user & plan config file
      * 
-     * @param username
+     * @param userId
      * @return bucket
      */
-    private Bucket newBucket(String username) {
-        User u = userService.findUserByUsername(username);
-        if (StringUtils.isEmpty(username) || u == null) {
+    private Bucket newBucket(String userId) {
+        User u = userService.findUserById(userId);
+        if (StringUtils.isEmpty(userId) || u == null) {
             return withoutUser();
         }
         Plan plan = u.getActualPlan();
