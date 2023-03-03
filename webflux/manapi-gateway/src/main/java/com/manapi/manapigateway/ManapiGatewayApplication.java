@@ -8,6 +8,7 @@ import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.reactive.resource.WebJarsResourceResolver;
 
 @SpringBootApplication
 @EnableWebFlux
@@ -35,7 +36,10 @@ public class ManapiGatewayApplication {
 						.addResourceLocations("classpath:/META-INF/resources/");
 
 				registry.addResourceHandler("/webjars/**")
-						.addResourceLocations("classpath:/META-INF/resources/webjars/");
+						.addResourceLocations("classpath:/META-INF/resources/webjars/")
+						.resourceChain(true)
+						.addResolver(new WebJarsResourceResolver());
+						
 			}
 
 			@Override

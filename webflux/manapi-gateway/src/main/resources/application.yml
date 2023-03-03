@@ -15,7 +15,19 @@ spring:
     user:
       name: root
       password: root
+  cloud:
+    gateway:
+      routes:
+      - id: projects
+        uri: http://localhost:8081
+        predicates:
+        - Path=/project/*/projects/**
 springdoc:
+  # swagger-ui:
+  #   path: /
+  #   urls:
+  #   - name: Project service
+  #     url: http://localhost:8081/swagger-ui.html
   api-docs:
     enabled: true
     groups:
