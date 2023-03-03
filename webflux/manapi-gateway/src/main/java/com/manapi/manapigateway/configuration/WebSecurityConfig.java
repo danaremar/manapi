@@ -41,6 +41,8 @@ public class WebSecurityConfig {
 							"/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/swagger-ui/*",
 							"/webjars/**", "/resources/**")
 						.permitAll()
+					.pathMatchers("/project/*/projects/**")
+						.authenticated()
 					.anyExchange()
 						// .permitAll()
 						.authenticated()
