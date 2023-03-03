@@ -1,0 +1,50 @@
+spring:
+  data:
+    mongodb:
+      uri: '${DB_URL}'
+      auto-index-creation: true
+  main:
+    lazy-initialization: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  banner:
+    location: 'classpath:templates/banner.txt'
+  security:
+    user:
+      name: root
+      password: root
+springdoc:
+  api-docs:
+    enabled: true
+    groups:
+      enabled: true
+manapi:
+  frontend:
+    url: '${MANAPI_FRONTEND_URL}'
+  resource:
+    images: src/main/resources/images/
+    plans: src/main/resources/plans.yaml
+  security:
+    jwt:
+      secret: '${MANAPI_JWT_KEY}'
+      expiration: '3600000'
+    password:
+      secret: '${MANAPI_PASS_KEY}'
+      iterations: '2'
+      length: '512'
+    protection:
+      xss: true
+      csrf: false
+server:
+  port: '${MANAPI_GATEWAY_PORT}'
+  error:
+    include-stacktrace: never
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          client:
+            RestTemplate: DEBUG
