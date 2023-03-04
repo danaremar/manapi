@@ -53,6 +53,7 @@ server:
   port: '${MANAPI_GATEWAY_PORT}'
   error:
     include-stacktrace: never
+  forward-headers-strategy: framework
 logging:
   level:
     org:
