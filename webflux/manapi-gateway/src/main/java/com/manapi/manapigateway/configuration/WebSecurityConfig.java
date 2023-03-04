@@ -37,7 +37,7 @@ public class WebSecurityConfig {
 		return http
 				.csrf().disable()
 				.authorizeExchange()
-					.pathMatchers("/login", "/register", "/v3/*", "/configuration/ui",
+					.pathMatchers("/login", "/register", "/v3/**", "/configuration/ui",
 							"/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/swagger-ui/*",
 							"/webjars/**", "/resources/**")
 						.permitAll()
