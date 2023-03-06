@@ -1,10 +1,27 @@
 spring:
   main:
     lazy-initialization: true
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  datasource:
+    url: '${DB_URL}'
+    username: '${DB_USER}'
+    password: '${DB_PASSWORD}'
+    driver-class-name: '${DB_CONNECTOR}'
+  # session:
+  #   jdbc:
+  #     initialize-schema: always
+  # sql:
+  #   init:
+  #     mode: always
+  #     data-locations: 'classpath*:db/mariadb/data.sql'
   banner:
     location: 'classpath:templates/banner.txt'
 server:

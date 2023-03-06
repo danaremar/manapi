@@ -16,7 +16,7 @@ dependencies {
 	// CLOUD
 	implementation 'org.springframework.cloud:spring-cloud-starter-gateway:3.1.5'
 
-	// BBDD -> NoSQL
+	// DB -> MongoDB (NoSQL document oriented)
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
 	// TEST
