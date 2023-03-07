@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -21,6 +22,7 @@ import javax.validation.constraints.PastOrPresent;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.manapi.manapiproject.model.column.Column;
 import com.manapi.manapiproject.model.effort.Effort;
 import com.manapi.manapiproject.model.epic.Epic;
 import com.manapi.manapiproject.model.milestone.Milestone;
@@ -76,6 +78,10 @@ public class Task extends NamedEntity {
     @NotBlank
     @Length(max = 255)
     private String creator;
+
+    @ManyToOne
+    @JoinColumn(name = "column_id")
+    private Column column;
 
     @ElementCollection
     @CollectionTable(name = "task_assigned_users_id", joinColumns = @JoinColumn(name = "task_id"))

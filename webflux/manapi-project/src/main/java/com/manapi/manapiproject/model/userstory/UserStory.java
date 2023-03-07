@@ -11,6 +11,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.manapi.manapiproject.model.sprint.Sprint;
 import com.manapi.manapiproject.model.milestone.Milestone;
 import com.manapi.manapiproject.model.epic.Epic;
@@ -34,12 +36,15 @@ public class UserStory extends NamedEntity {
     private Long number;
 
     @NotBlank
+    @Length(max = 255)
     private String asUser;
 
     @NotBlank
+    @Length(max = 255)
     private String iCan;
 
     @NotBlank
+    @Length(max = 255)
     private String soThat;
 
     @OneToOne
