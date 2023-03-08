@@ -29,8 +29,11 @@ public class PrincipalUser implements UserDetails {
 
 	public static PrincipalUser build(User user) {
 
-		// TODO: get authorities
-		List<GrantedAuthority> ls = List.of(new SimpleGrantedAuthority("project"));
+		// List<GrantedAuthority> ls = List.of(new SimpleGrantedAuthority("xdd"));
+		List<GrantedAuthority> ls = user.getActiveFeatureGroups().stream()
+			.map(x -> (GrantedAuthority) new SimpleGrantedAuthority(x))
+			.toList();
+
 
 		// transform to principal
 		PrincipalUser principalUser = new PrincipalUser();

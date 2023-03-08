@@ -12,6 +12,7 @@ public class ManapiMessages {
     public static final String TOKEN_BAD_FORMAT = "Token given is unsupported";
     public static final String RATE_EXCEEDED = "Rate cuota was exceeded";
     public static final String QUOTA_EXCEEDED = "Quota exceeded";
+    public static final String NOT_AUTHORIZED_FEATURE = "Not authorized feature";
 
     // USER
     public static final String USER_NOT_FOUND_MESSAGE = "User doesn't found";

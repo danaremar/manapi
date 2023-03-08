@@ -28,7 +28,7 @@ public class GlobalPreFiltering implements GlobalFilter {
         // Get params
         String url = exchange.getRequest().getURI().toString();
         String projectId = url.split("/project/")[1].split("/")[0];
-        String token = exchange.getRequest().getHeaders().get("Authorization").get(0).replace("Bearer ", "");
+        String token = jwtService.getTokenFromRequest(exchange.getRequest());
         String userId = jwtService.getUserIdFromToken(token);
         Integer role = getRole(projectId, userId);
 

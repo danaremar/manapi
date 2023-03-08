@@ -21,7 +21,7 @@ spring:
       - id: projects
         uri: http://localhost:8081
         filters:
-        - FeatureGroup=PROJECT
+        - FeatureGroup=project
         predicates:
         - Path=/project/*/projects/**
 springdoc:
