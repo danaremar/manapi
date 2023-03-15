@@ -1,0 +1,97 @@
+<!-- NAVBAR -->
+<nav class="fixed top-0 z-50 w-full bg-cyan-800 dark:bg-dark-3">
+    <div class="px-3 py-3 lg:px-5 lg:pl-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center justify-start">
+
+                <!-- sidebar button -->
+                <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar"
+                    type="button"
+                    class="inline-flex items-center p-2 text-sm text-neutral-500 rounded-lg md:hidden hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:focus:ring-neutral-600">
+                    <span class="sr-only">Open sidebar</span>
+                    <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path clip-rule="evenodd" fill-rule="evenodd"
+                            d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
+                        </path>
+                    </svg>
+                </button>
+
+                <!-- app name -->
+                <span class="ml-2 self-center text-xl font-semibold sm:text-xl whitespace-nowrap text-white dark:text-neutral-300">MANAPI</span>
+            </div>
+            <div class="flex items-center">
+                <div class="flex items-center ml-3">
+
+                    <!-- user image -->
+                    <div>
+                        <img class="w-10 h-10 rounded-full" src="/assets/cute-astronaut-1.jpg" alt="user photo">
+                    </div>
+
+                    <!-- username -->
+                    <div class="ml-3 text-white dark:text-neutral-300">
+                        @{{username}}
+                    </div>
+
+                    <!-- logout icon -->
+                    <button class="ml-5" (click)="onLogout()">
+                        <em class="bi-power text-red-500 hover:text-red-300 text-3xl"></em>
+                    </button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<!-- SIDEBAR -->
+<aside id="logo-sidebar"
+    class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-neutral-100 sm:translate-x-0 dark:bg-dark-4"
+    aria-label="Sidebar">
+    <div class="h-full px-3 pb-4 overflow-y-auto">
+        <ul class="space-y-2">
+
+            <li *ngFor="let group of menuGroups; let i=index">
+
+                <!-- GROUP -->
+                <a *ngIf="group.features!=null"
+                    class="flex items-center w-full p-2 text-base font-normal text-neutral-900 transition duration-75 rounded-lg group hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700"
+                    [attr.data-collapse-toggle]="'dropdown-menu-'+i">
+                    <em class="{{group.icon}} my-auto text-xl flex-shrink-0 w-6 text-neutral-500 transition duration-75 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-white"
+                        sidebar-toggle-item></em>
+                    <span
+                        class="flex-1 ml-3 text-left whitespace-nowrap dark:text-neutral-300 dark:group-hover:text-white"
+                        sidebar-toggle-item>{{group.name}}</span>
+                    <em
+                        class="bi-chevron-down dropdown-chevron dark:text-neutral-300 dark:group-hover:text-white "></em>
+                </a>
+
+                <!-- GROUP WITHOUT CHILDREN -->
+                <a *ngIf="group.features==null" [routerLink]="[group.url]"
+                    class="flex items-center w-full p-2 text-base font-normal text-neutral-900 transition duration-75 rounded-lg group hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700">
+                    <em class="{{group.icon}} my-auto text-xl flex-shrink-0 w-6 text-neutral-500 transition duration-75 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-white"
+                        sidebar-toggle-item></em>
+                    <span
+                        class="flex-1 ml-3 text-left whitespace-nowrap dark:text-neutral-300 dark:group-hover:text-white"
+                        sidebar-toggle-item>{{group.name}}</span>
+                </a>
+
+                <!-- CHILDRENS -->
+                <ul id="dropdown-menu-{{i}}" class="hidden py-2 space-y-2">
+                    <li *ngFor="let feature of group.features; let j=index">
+                        <a [routerLink]="[feature.url]"
+                            class="flex text-sm items-center w-full p-2 text-base font-normal text-neutral-900 transition duration-75 rounded-lg pl-11 group hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700">
+                            {{feature.name}}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</aside>
+
+<!-- CONTENT -->
+<div class="p-6 mt-14 sm:ml-64 principal-content">
+    <router-outlet></router-outlet>
+</div>
