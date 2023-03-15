@@ -5,6 +5,7 @@ dependencies {
     // SPRING
     implementation 'org.springframework.boot:spring-boot-starter-jersey'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation'org.springframework.boot:spring-boot-starter-security'
 
     // BBDD -> SQL
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
