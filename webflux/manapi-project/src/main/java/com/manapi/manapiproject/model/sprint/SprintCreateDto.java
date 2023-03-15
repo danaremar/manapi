@@ -18,5 +18,7 @@ public class SprintCreateDto extends NamedEntityCreateDto {
     private Date startDate;
 
     private Date endDate;
+
+    private Date closeDate;
     
 }
