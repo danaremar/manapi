@@ -1,0 +1,56 @@
+// SPRING BOOT 2
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.9'
+	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+}
+
+// SPRING BOOT 3
+// plugins {
+// 	id 'java'
+// 	id 'org.springframework.boot' version '3.0.2'
+// 	id 'io.spring.dependency-management' version '1.1.0'
+// }
+
+allprojects {                                  
+	apply plugin: 'java'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+
+	group = 'com.manapi'
+	version = 'v0.2'
+	sourceCompatibility = '19'
+
+	repositories {
+		mavenCentral()
+	}
+
+	configurations {
+		compileOnly {
+			extendsFrom annotationProcessor
+		}
+	}
+
+	dependencies {
+
+		// SPRING
+		annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+		developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+		// SWAGGER
+		implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+		
+		// OTHERS
+		implementation 'org.modelmapper:modelmapper:3.1.1'
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+		
+		// TESTING
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+		testImplementation 'junit:junit:4.13.2'
+	}
+
+	test {
+		useJUnitPlatform()
+	}
+}

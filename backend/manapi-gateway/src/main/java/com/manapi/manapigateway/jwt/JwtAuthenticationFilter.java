@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
@@ -44,9 +43,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			// AUTHENTICATION & AUTHORIZATION
 			String username = jwtService.getUsernameFromToken(token);
-			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null,
-					userDetails.getAuthorities());
+			PrincipalUser principalUser = userDetailsService.loadUserByUsername(username);
+			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(principalUser, null,
+			principalUser.getAuthorities());
 			SecurityContextHolder.getContext().setAuthentication(auth);
 
 			// RATE LIMITER

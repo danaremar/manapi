@@ -1,0 +1,50 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CHEVRON ROTATE IF EXPANDED */
+
+*>.dropdown-chevron {
+    transition: transform 0.2s ease-out;
+    transform: rotate(-90deg);
+}
+
+*[aria-expanded="true"]>.dropdown-chevron {
+    transform: rotate(0deg);
+}
+
+/* VERTICAL SCROLLBAR */
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    border-radius: 2.5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 2.5px;
+}
+
+@media (prefers-color-scheme: dark) {
+    ::-webkit-scrollbar-thumb {
+        background: rgb(212, 212, 212);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgb(111, 111, 111);
+    }
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(111, 111, 111);
+    border-radius: 2.5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(212, 212, 212);
+    border-radius: 2.5px;
+}

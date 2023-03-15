@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.manapi.manapigateway.exceptions.users.DuplicatedEmail;
 import com.manapi.manapigateway.exceptions.users.DuplicatedUsername;
-import com.manapi.manapigateway.model.users.UserCreateDto;
+import com.manapi.manapicommon.model.users.UserCreateDto;
 import com.manapi.manapigateway.service.UserService;
 
 @SpringBootTest

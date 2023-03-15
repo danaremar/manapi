@@ -1,10 +1,7 @@
 package com.manapi.manapigateway.model.users;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,25 +19,20 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.manapi.manapicommon.model.users.PlanType;
 import com.manapi.manapigateway.model.projects.ProjectRole;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Table(name = "users", indexes = { @Index(columnList = "username"), @Index(columnList = "email") })
-public class User implements UserDetails {
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -112,67 +104,9 @@ public class User implements UserDetails {
 	private Date endPlan;
 
 	@OneToMany(fetch = FetchType.LAZY)
-	private transient List<Subscription> subscriptions;
+	private List<Subscription> subscriptions;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private transient List<ProjectRole> projectRoles;
-
-	/**
-	 * Returns subscriptions plans
-	 * <p>
-	 * Subscriptions denotes features that users can use. By default project feature
-	 * is enabled
-	 * 
-	 * @return user features
-	 */
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-
-		// returns default
-		if (subscriptions == null || subscriptions.isEmpty()) {
-			return List.of(new SimpleGrantedAuthority(FeatureType.PROJECT.name()));
-		}
-
-		// filter subscriptions by future end date & extract names
-		List<SimpleGrantedAuthority> ls = subscriptions.stream()
-			.filter(x -> x.getEnd().after(new Date()))
-			.map(x -> new SimpleGrantedAuthority(x.getFeatureType().name()))
-			.collect(Collectors.toList());
-
-		// returns default
-		if(ls==null || ls.isEmpty()) {
-			return List.of(new SimpleGrantedAuthority(FeatureType.PROJECT.name()));
-		}
-
-		// return completed list
-		return ls;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return deleteDate==null || deleteDate.before(new Date());
-	}
-
-	/**
-	 * Denotes if user tried to access multiple times
-	 * @return <code>true</code> if user tried to access less than 10 times
-	 */
-	@Override
-	public boolean isAccountNonLocked() {
-		return failedRetries < 10L;
-	}
-
-	/**
-	 * Never expires. Expiration date was given in JWT auth
-	 */
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return active;
-	}
+	private List<ProjectRole> projectRoles;
 
 }

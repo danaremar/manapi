@@ -1,0 +1,15 @@
+group = 'com.manapi.manapiproject'
+
+dependencies {
+
+    // SPRING
+    implementation 'org.springframework.boot:spring-boot-starter-jersey'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // BBDD -> SQL
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    runtimeOnly 'org.postgresql:postgresql:42.4.1'
+	
+}

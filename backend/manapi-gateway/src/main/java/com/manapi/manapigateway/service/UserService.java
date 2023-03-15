@@ -27,11 +27,11 @@ import com.manapi.manapigateway.exceptions.users.DuplicatedEmail;
 import com.manapi.manapigateway.exceptions.users.DuplicatedUsername;
 import com.manapi.manapigateway.exceptions.users.IncorrectPassword;
 import com.manapi.manapigateway.exceptions.users.UserNotFound;
-import com.manapi.manapigateway.model.users.PlanType;
+import com.manapi.manapicommon.model.users.PlanType;
 import com.manapi.manapigateway.model.users.User;
-import com.manapi.manapigateway.model.users.UserCreateDto;
-import com.manapi.manapigateway.model.users.UserShowDto;
-import com.manapi.manapigateway.model.users.UserUpdateDto;
+import com.manapi.manapicommon.model.users.UserCreateDto;
+import com.manapi.manapicommon.model.users.UserShowDto;
+import com.manapi.manapicommon.model.users.UserUpdateDto;
 import com.manapi.manapigateway.repository.UserRepository;
 
 @Service

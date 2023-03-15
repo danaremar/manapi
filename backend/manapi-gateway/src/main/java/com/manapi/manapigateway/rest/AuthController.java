@@ -12,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,8 +23,10 @@ import com.manapi.manapigateway.exceptions.users.DuplicatedEmail;
 import com.manapi.manapigateway.exceptions.users.DuplicatedUsername;
 import com.manapi.manapigateway.jwt.JwtDto;
 import com.manapi.manapigateway.jwt.JwtService;
-import com.manapi.manapigateway.model.users.UserCreateDto;
-import com.manapi.manapigateway.model.users.UserLoginDto;
+import com.manapi.manapigateway.jwt.PrincipalUser;
+import com.manapi.manapicommon.model.users.UserCreateDto;
+import com.manapi.manapicommon.model.users.UserLoginDto;
+import com.manapi.manapigateway.model.users.User;
 import com.manapi.manapigateway.model.util.Message;
 import com.manapi.manapigateway.service.UserService;
 
@@ -63,10 +64,12 @@ public class AuthController {
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String jwt = this.jwtService.generateToken(userDetails);
+		PrincipalUser principalUser = (PrincipalUser) authentication.getPrincipal();
+		User user = userService.findUserByUsername(principalUser.getUsername());
 
-		JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
+		String jwt = this.jwtService.generateToken(user);
+
+		JwtDto jwtDto = new JwtDto(jwt, principalUser.getUsername(), principalUser.getAuthorities());
 
 		return new ResponseEntity<>(jwtDto, HttpStatus.ACCEPTED);
 	}
