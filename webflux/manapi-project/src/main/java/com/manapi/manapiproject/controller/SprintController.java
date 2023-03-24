@@ -29,43 +29,45 @@ public class SprintController {
     @Autowired
     private SprintService sprintService;
 
-    @PreAuthorize("hasAuthority('0') && hasAuthority('1') && hasAuthority('2') && hasAuthority('3')")
+    @PreAuthorize("hasAuthority('OWNER') or hasAuthority('ADMIN') or hasAuthority('MEMBER') or hasAuthority('VISITOR')")
     @GetMapping(value = "/list")
     public ResponseEntity<Object> getSprintsByProjectId(@PathVariable String projectId) {
         try {
             List<SprintShowDto> ls = sprintService.findSprintsByProjectId(projectId);
-            return new ResponseEntity(ls, HttpStatus.OK);
+            return new ResponseEntity<>(ls, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.CONFLICT);
         }
     }
 
-    @PreAuthorize("hasAuthority('0') && hasAuthority('1')")
+    @PreAuthorize("hasAuthority('OWNER') or hasAuthority('ADMIN')")
     @PostMapping()
     public ResponseEntity<Object> createSprint(@RequestBody @Valid SprintCreateDto sprintCreateDto, @PathVariable String projectId) {
         try {
             SprintShowDto s = sprintService.createSprint(sprintCreateDto, projectId);
-            return new ResponseEntity(s, HttpStatus.CREATED);
+            return new ResponseEntity<>(s, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.CONFLICT);
         }
     }
 
+    @PreAuthorize("hasAuthority('OWNER') or hasAuthority('ADMIN')")
     @PutMapping(value = "/{sprintId}")
     public ResponseEntity<Object> updateSprint(@RequestBody @Valid SprintCreateDto sprintUpdateDto, @PathVariable String sprintId) {
         try {
             SprintShowDto s = sprintService.updateSprint(sprintUpdateDto, sprintId);
-            return new ResponseEntity(s, HttpStatus.OK);
+            return new ResponseEntity<>(s, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.CONFLICT);
         }
     }
 
+    @PreAuthorize("hasAuthority('OWNER') or hasAuthority('ADMIN')")
     @DeleteMapping(value = "/{sprintId}")
     public ResponseEntity<Object> deleteSprint(@PathVariable String sprintId) {
         try {
             sprintService.deleteSprint(sprintId);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.CONFLICT);
         }

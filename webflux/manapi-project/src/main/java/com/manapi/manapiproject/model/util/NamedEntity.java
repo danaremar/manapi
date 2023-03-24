@@ -1,5 +1,7 @@
 package com.manapi.manapiproject.model.util;
 
+import java.util.UUID;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -19,12 +21,10 @@ import lombok.NoArgsConstructor;
 public class NamedEntity {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    private Long id;
 
     @NotBlank
     @Length(max = 50)
     private String name;
-    
+
 }

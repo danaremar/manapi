@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 import com.manapi.manapigateway.model.user.User;
 import com.manapi.manapigateway.model.project.ProjectRole;
+import com.manapi.manapigateway.model.project.RoleType;
 import com.manapi.manapigateway.dto.project.ProjectCreateDto;
 import com.manapi.manapigateway.dto.project.ProjectListDto;
 import com.manapi.manapigateway.dto.project.ProjectShowDto;
@@ -48,7 +49,7 @@ public class ProjectService {
      * @param roles   -> list of allowed roles
      * @throws UnauthorizedException
      */
-    public Mono<Void> verifyMono(Project project, List<Integer> roles) {
+    public Mono<Void> verifyMono(Project project, List<String> roles) {
         return userService.getCurrentUser()
                 .filter(user -> (project != null && project.getActive() && project.getProjectRoles().stream()
                         .anyMatch(x -> roles.contains(x.getRole()) && x.getUserId().equals(user.getId()))))
@@ -62,7 +63,7 @@ public class ProjectService {
      * @param project
      */
     public Mono<Void> verifyOwnerMono(Project project) {
-        return verifyMono(project, List.of(0));
+        return verifyMono(project, List.of(RoleType.OWNER.toString()));
     }
 
     /**
@@ -71,7 +72,7 @@ public class ProjectService {
      * @param project
      */
     public Mono<Void> verifyOwnerOrAdminMono(Project project) {
-        return verifyMono(project, List.of(0, 1));
+        return verifyMono(project, List.of(RoleType.OWNER.toString(), RoleType.ADMIN.toString()));
     }
 
     /**
@@ -80,7 +81,7 @@ public class ProjectService {
      * @param project
      */
     public Mono<Void> verifyMemberMono(Project project) {
-        return verifyMono(project, List.of(0, 1, 2));
+        return verifyMono(project, List.of(RoleType.OWNER.toString(),RoleType.ADMIN.toString(),RoleType.MEMBER.toString()));
     }
 
     /**
@@ -89,7 +90,7 @@ public class ProjectService {
      * @param project
      */
     public Mono<Void> verifyUserRelatedWithProjectMono(Project project) {
-        return verifyMono(project, List.of(0, 1, 2, 3));
+        return verifyMono(project, List.of(RoleType.OWNER.toString(),RoleType.ADMIN.toString(),RoleType.MEMBER.toString(),RoleType.VISITOR.toString()));
     }
 
     /**
@@ -191,7 +192,7 @@ public class ProjectService {
         ownerProjectRole.setCreationDate(new Date());
         ownerProjectRole.setAccepted(true);
         ownerProjectRole.setActive(true);
-        ownerProjectRole.setRole(0);
+        ownerProjectRole.setRole("OWNER");
         ownerProjectRole.setUserId(user.getId());
         ownerProjectRole.setModificationDate(new Date());
 

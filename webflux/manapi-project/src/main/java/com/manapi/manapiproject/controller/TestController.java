@@ -14,25 +14,25 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class TestController {
 
-    @PreAuthorize("hasAuthority('1')")
+    @PreAuthorize("hasAuthority('OWNER')")
     @PostMapping(value = "/{projectId}/projects/testOwner")
     public ResponseEntity<Object> getSprintOwnerTest(@PathVariable String projectId) {
         return new ResponseEntity<>("OK OWNER", HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('0') or hasAuthority('1')")
+    @PreAuthorize("hasAuthority('OWNER') or hasAuthority('ADMIN')")
     @PostMapping(value = "/{projectId}/projects/testAdmin")
     public ResponseEntity<Object> getSprintAdminTest(@PathVariable String projectId) {
         return new ResponseEntity<>("OK ADMIN", HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('0') or hasAuthority('1') or hasAuthority('2')")
+    @PreAuthorize("hasAuthority('OWNER') or hasAuthority('ADMIN') or hasAuthority('MEMBER')")
     @PostMapping(value = "/{projectId}/projects/testMember")
     public ResponseEntity<Object> getSprintAdminMember(@PathVariable String projectId) {
         return new ResponseEntity<>("Todo ok", HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('0') or hasAuthority('1') or hasAuthority('2') or hasAuthority('3')")
+    @PreAuthorize("hasAuthority('OWNER') or hasAuthority('ADMIN') or hasAuthority('MEMBER') or hasAuthority('VISITOR')")
     @PostMapping(value = "/{projectId}/projects/testVisitor")
     public ResponseEntity<Object> getSprintAdminVisitor(@PathVariable String projectId) {
         return new ResponseEntity<>("Todo ok", HttpStatus.OK);

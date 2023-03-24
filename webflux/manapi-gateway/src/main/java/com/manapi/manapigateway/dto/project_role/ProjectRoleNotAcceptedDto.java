@@ -11,10 +11,7 @@ public class ProjectRoleNotAcceptedDto {
 
     private String id;
 
-	/*
-	 * ROLES : 0 -> OWNER; 1 -> ADMIN; 2 -> MEMBER; 3 -> VISITOR
-	 */
-	private Integer role;
+	private String role;
 	
 	private String projectName;
     

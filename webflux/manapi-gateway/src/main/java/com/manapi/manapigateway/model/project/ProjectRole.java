@@ -15,7 +15,7 @@ public class ProjectRole extends CrudEntity {
 
     private String userId;
 
-    private Integer role;
+    private String role;
 
     private Boolean accepted;
 

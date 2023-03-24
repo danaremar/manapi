@@ -13,7 +13,7 @@ public class ProjectRoleShowDto {
 
     private String userId;
 
-    private Integer role;
+    private String role;
 
     private Boolean accepted;
     

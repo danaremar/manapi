@@ -30,14 +30,14 @@ public class GlobalPreFiltering implements GlobalFilter {
         String projectId = url.split("/project/")[1].split("/")[0];
         String token = jwtService.getTokenFromRequest(exchange.getRequest());
         String userId = jwtService.getUserIdFromToken(token);
-        Integer role = getRole(projectId, userId);
+        String role = getRole(projectId, userId);
 
         // set headers
         ServerHttpRequest req = exchange.getRequest()
                 .mutate()
                 .header("X-project-id", projectId)
                 .header("X-user-id", userId)
-                .header("X-user-role", role.toString())
+                .header("X-user-role", role)
                 .build();
         ServerWebExchange mutatedExchange = exchange.mutate().request(req).build();
 
@@ -50,7 +50,7 @@ public class GlobalPreFiltering implements GlobalFilter {
      * @param projectId
      * @return
      */
-    private Integer getRole(String projectId, String userId) {
+    private String getRole(String projectId, String userId) {
 
         // get userId & project
         Project project = projectService.findProjectById(projectId);
@@ -58,7 +58,7 @@ public class GlobalPreFiltering implements GlobalFilter {
         // return integer role
         return project.getProjectRoles().stream()
                 .filter(x -> x.getUserId().equals(userId))
-                .map(x -> x.getRole())
+                .map(x -> x.getRole().toString())
                 .findFirst().orElse(null);
     }
 
