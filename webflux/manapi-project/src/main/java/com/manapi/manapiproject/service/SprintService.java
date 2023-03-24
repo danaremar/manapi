@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.manapi.manapiproject.model.sprint.Sprint;
 import com.manapi.manapiproject.model.sprint.SprintCreateDto;
+import com.manapi.manapiproject.model.sprint.SprintShowDto;
 import com.manapi.manapiproject.repository.SprintRepository;
 
 @Service
@@ -39,17 +40,28 @@ public class SprintService {
     }
 
     /**
+     * Sprint -> SprintShowDto
+     * 
+     * @param sprint
+     * @return
+     */
+    public SprintShowDto mapToSprintShowDto(Sprint sprint) {
+        return modelMapper.map(sprint, SprintShowDto.class);
+    }
+
+    /**
      * Find sprints by project id, ordered by number desc
      * 
      * @param projectId
      * @return
      */
-    public List<Sprint> findSprintByProjectId(String projectId) {
+    public List<SprintShowDto> findSprintsByProjectId(String projectId) {
         Sprint exampleSprint = new Sprint();
         exampleSprint.setActive(true);
         exampleSprint.setProjectId(projectId);
         Example<Sprint> example = Example.of(exampleSprint);
-        return sprintRepository.findAll(example, Sort.by(Sort.Direction.DESC, "number"));
+        List<Sprint> ls = sprintRepository.findAll(example, Sort.by(Sort.Direction.DESC, "number"));
+        return ls.stream().map(this::mapToSprintShowDto).toList();
     }
 
     /**
@@ -73,14 +85,15 @@ public class SprintService {
      * @return
      */
     @Transactional
-    public Sprint createSprint(SprintCreateDto sprintCreateDto, String projectId) {
+    public SprintShowDto createSprint(SprintCreateDto sprintCreateDto, String projectId) {
         Long number = countSprintsByProjectId(projectId);
         Sprint sprint = modelMapper.map(sprintCreateDto, Sprint.class);
         sprint.setProjectId(projectId);
         sprint.setNumber(number);
         sprint.setActive(true);
         sprint.setCreationDate(new Date());
-        return sprintRepository.save(sprint);
+        Sprint s = sprintRepository.save(sprint);
+        return mapToSprintShowDto(s);
     }
 
     /**
@@ -91,13 +104,14 @@ public class SprintService {
      * @return
      */
     @Transactional
-    public Sprint updateSprint(SprintCreateDto sprintUpdateDto, String sprintId) {
+    public SprintShowDto updateSprint(SprintCreateDto sprintUpdateDto, String sprintId) {
         Sprint sprint = findSprintById(sprintId);
         sprint.setName(sprintUpdateDto.getName());
         sprint.setStartDate(sprintUpdateDto.getStartDate());
         sprint.setEndDate(sprintUpdateDto.getEndDate());
         sprint.setCloseDate(sprintUpdateDto.getCloseDate());
-        return sprintRepository.save(sprint);
+        Sprint s = sprintRepository.save(sprint);
+        return mapToSprintShowDto(s);
     }
 
     /**
