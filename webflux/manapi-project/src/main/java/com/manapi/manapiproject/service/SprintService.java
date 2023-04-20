@@ -86,7 +86,7 @@ public class SprintService {
      */
     @Transactional
     public SprintShowDto createSprint(SprintCreateDto sprintCreateDto, String projectId) {
-        Long number = countSprintsByProjectId(projectId);
+        Long number = countSprintsByProjectId(projectId) + 1L;
         Sprint sprint = modelMapper.map(sprintCreateDto, Sprint.class);
         sprint.setProjectId(projectId);
         sprint.setNumber(number);

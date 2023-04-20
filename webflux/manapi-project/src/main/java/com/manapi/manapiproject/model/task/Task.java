@@ -24,10 +24,7 @@ import org.hibernate.validator.constraints.Length;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.manapi.manapiproject.model.column.Column;
 import com.manapi.manapiproject.model.effort.Effort;
-import com.manapi.manapiproject.model.epic.Epic;
-import com.manapi.manapiproject.model.milestone.Milestone;
 import com.manapi.manapiproject.model.subtask.Subtask;
-import com.manapi.manapiproject.model.userstory.UserStory;
 import com.manapi.manapiproject.model.util.NamedEntity;
 
 import lombok.AllArgsConstructor;
@@ -111,16 +108,5 @@ public class Task extends NamedEntity {
             return 0.;
         }
     }
-
-    // Milestone / Epic / UserStory
-
-    @OneToOne
-    private Milestone milestone;
-
-    @OneToOne
-    private Epic epic;
-
-    @OneToOne
-    private UserStory userStory;
 
 }

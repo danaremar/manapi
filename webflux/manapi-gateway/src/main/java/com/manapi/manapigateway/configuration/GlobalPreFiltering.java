@@ -58,7 +58,7 @@ public class GlobalPreFiltering implements GlobalFilter {
         // return integer role
         return project.getProjectRoles().stream()
                 .filter(x -> x.getUserId().equals(userId))
-                .map(x -> x.getRole().toString())
+                .map(x -> x.getRole())
                 .findFirst().orElse(null);
     }
 

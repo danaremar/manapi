@@ -51,7 +51,7 @@ public class SprintController {
         }
     }
 
-    @PreAuthorize("hasAuthority('OWNER') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('OWNER') && hasAuthority('ADMIN')")
     @PutMapping(value = "/{sprintId}")
     public ResponseEntity<Object> updateSprint(@RequestBody @Valid SprintCreateDto sprintUpdateDto, @PathVariable String sprintId) {
         try {
@@ -62,7 +62,7 @@ public class SprintController {
         }
     }
 
-    @PreAuthorize("hasAuthority('OWNER') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('OWNER') && hasAuthority('ADMIN')")
     @DeleteMapping(value = "/{sprintId}")
     public ResponseEntity<Object> deleteSprint(@PathVariable String sprintId) {
         try {

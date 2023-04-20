@@ -14,9 +14,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
 import com.manapi.manapiproject.model.util.NamedEntity;
-import com.manapi.manapiproject.model.milestone.Milestone;
-import com.manapi.manapiproject.model.userstory.UserStory;
-import com.manapi.manapiproject.model.epic.Epic;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -62,14 +59,5 @@ public class Sprint extends NamedEntity {
 
     @NotNull
     private Boolean active;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sprint")
-    private List<Milestone> milestones;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sprint")
-    private List<Epic> epics;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sprint")
-    private List<UserStory> userStories;
 
 }
