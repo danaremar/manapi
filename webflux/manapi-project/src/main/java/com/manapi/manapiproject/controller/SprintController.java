@@ -22,7 +22,12 @@ import com.manapi.manapiproject.model.sprint.SprintShowDto;
 import com.manapi.manapiproject.model.util.Message;
 import com.manapi.manapiproject.service.SprintService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@SecurityRequirement(name = "Bearer Authentication")
+@Tag(name = "Sprints")
 @RequestMapping("/project/{projectId}/projects/sprint")
 public class SprintController {
 
