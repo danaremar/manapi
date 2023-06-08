@@ -48,7 +48,7 @@ public class User extends CrudEntity {
 
         // get subscription with valid end date
         Subscription s = subscriptions.stream()
-                .filter(x -> x.getEndDate() != null && x.getEndDate().after(new Date()))
+                .filter(x -> x.getEndDate() == null || x.getEndDate().after(new Date()))
                 .findFirst()
                 .orElse(null);
 
