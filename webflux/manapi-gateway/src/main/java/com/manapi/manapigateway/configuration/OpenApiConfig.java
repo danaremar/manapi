@@ -2,7 +2,6 @@ package com.manapi.manapigateway.configuration;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +20,8 @@ import io.swagger.v3.parser.OpenAPIV3Parser;
 @SecurityScheme(name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 public class OpenApiConfig implements WebFluxConfigurer {
 
-	@Autowired
-	private RouteDefinitionLocator routeDefinitionLocator;
-
 	@Bean
-	public OpenAPI customOpenAPI() {
+	public OpenAPI customOpenAPI(RouteDefinitionLocator routeDefinitionLocator) {
 
 		OpenAPI openAPI = new OpenAPI();
 
@@ -34,12 +30,6 @@ public class OpenApiConfig implements WebFluxConfigurer {
 		for (RouteDefinition r : routeDefinitions) {
 			openAPI = mergeOpenAPISpecs(getOpenAPISpec(r.getUri().toString() + "/v3/api-docs"), openAPI);
 		}
-
-		// project
-		// openAPI = mergeOpenAPISpecs(getOpenAPISpec("http://localhost:8081/v3/api-docs"), openAPI);
-
-		// external example
-		// openAPI = mergeOpenAPISpecs(getOpenAPISpec("https://petstore3.swagger.io/api/v3/openapi.json"), openAPI);
 
 		// gateway information
 		setInfo(openAPI);
