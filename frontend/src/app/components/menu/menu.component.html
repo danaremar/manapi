@@ -1,6 +1,6 @@
 <!-- NAVBAR -->
 <nav class="fixed top-0 z-50 w-full bg-cyan-800 dark:bg-dark-3">
-    <div class="px-3 py-3 lg:px-5 lg:pl-3">
+    <div class="px-2 py-2 lg:px-5 lg:pl-3">
         <div class="flex items-center justify-between">
             <div class="flex items-center justify-start">
 
@@ -18,14 +18,26 @@
                 </button>
 
                 <!-- app name -->
-                <span class="ml-2 self-center text-xl font-semibold sm:text-xl whitespace-nowrap text-white dark:text-neutral-300">MANAPI</span>
+                <span class="ml-2 text-lg self-center font-semibold whitespace-nowrap text-white dark:text-neutral-300 mr-5">MANAPI</span>
+
+                <!-- project selector -->
+                <select name="project" id="project" class="mx-2 py-1 px-2 rounded-full text-sm font-semibold">
+                    <option value="1">Project: Manapi</option>
+                    <option value="1">Project: Manapi 2</option>
+                </select>
+
+                <!-- sprint selector -->
+                <select name="sprint" id="sprint" class="mx-2 py-1 px-2 rounded-full text-sm font-semibold">
+                    <option value="1">Sprint: #3 develop</option>
+                </select>
+
             </div>
             <div class="flex items-center">
                 <div class="flex items-center ml-3">
 
                     <!-- user image -->
                     <div>
-                        <img class="w-10 h-10 rounded-full" src="/assets/cute-astronaut-1.jpg" alt="user photo">
+                        <img class="w-8 h-8 rounded-full" src="/assets/cute-astronaut-1.jpg" alt="user photo">
                     </div>
 
                     <!-- username -->
@@ -35,7 +47,7 @@
 
                     <!-- logout icon -->
                     <button class="ml-5" (click)="onLogout()">
-                        <em class="bi-power text-red-500 hover:text-red-300 text-3xl"></em>
+                        <em class="bi-power text-red-500 hover:text-red-300 text-2xl"></em>
                     </button>
                     
                 </div>
@@ -47,7 +59,7 @@
 
 <!-- SIDEBAR -->
 <aside id="logo-sidebar"
-    class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-neutral-100 sm:translate-x-0 dark:bg-dark-4"
+    class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-neutral-100 sm:translate-x-0 dark:bg-dark-4"
     aria-label="Sidebar">
     <div class="h-full px-3 pb-4 overflow-y-auto">
         <ul class="space-y-2">
@@ -64,7 +76,7 @@
                         class="flex-1 ml-3 text-left whitespace-nowrap dark:text-neutral-300 dark:group-hover:text-white"
                         sidebar-toggle-item>{{group.name}}</span>
                     <em
-                        class="bi-chevron-down dropdown-chevron dark:text-neutral-300 dark:group-hover:text-white "></em>
+                        class="bi-chevron-down dropdown-chevron dark:text-neutral-300 dark:group-hover:text-white"></em>
                 </a>
 
                 <!-- GROUP WITHOUT CHILDREN -->

@@ -2,3 +2,19 @@
     height: calc(100vh - 64px) !important;
     overflow: auto !important;
 }
+
+select {
+    width: 250px;
+    height: 30px;
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+}
+
+@media (prefers-color-scheme: dark) {
+    select {
+        color: #9E9E9E;
+        border: 1px solid #9E9E9E;
+        background-color: #2C2C2C;
+    }
+}
