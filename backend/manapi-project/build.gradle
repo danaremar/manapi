@@ -1,7 +1,0 @@
-group = 'com.manapi.manapiproject'
-
-dependencies {
-
-    implementation project(':manapi-common')
-	
-}
