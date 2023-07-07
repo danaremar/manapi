@@ -1,9 +1,12 @@
 package com.manapi.manapigateway.configuration;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
+import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
@@ -21,13 +24,13 @@ import io.swagger.v3.parser.OpenAPIV3Parser;
 public class OpenApiConfig implements WebFluxConfigurer {
 
 	@Bean
-	public OpenAPI customOpenAPI(RouteDefinitionLocator routeDefinitionLocator) {
+	public OpenAPI customOpenAPI(RouteLocator routeLocator) {
 
 		OpenAPI openAPI = new OpenAPI();
 
 		// MICROSERVICES
-		List<RouteDefinition> routeDefinitions = routeDefinitionLocator.getRouteDefinitions().collectList().block();
-		for (RouteDefinition r : routeDefinitions) {
+		List<Route> routes = routeLocator.getRoutes().collectList().block();
+		for (Route r : routes) {
 			openAPI = mergeOpenAPISpecs(getOpenAPISpec(r.getUri().toString() + "/v3/api-docs"), openAPI);
 		}
 

@@ -1,0 +1,6 @@
+.angular
+.vscode
+desktop*
+dist/*
+links/*
+node_modules/*

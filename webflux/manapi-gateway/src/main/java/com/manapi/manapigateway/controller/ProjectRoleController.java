@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/project-role")
+@RequestMapping("/role")
 @Tag(name = "Project roles")
 @SecurityRequirement(name = "Bearer Authentication")
 @CrossOrigin

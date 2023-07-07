@@ -1,0 +1,32 @@
+/* You can add global styles to this file, and also import other style files */
+
+// BOOTSTRAP -> angular.json
+// @import "~bootstrap/scss/bootstrap.scss";
+// @import "~bootstrap-icons/font/bootstrap-icons.css";
+
+// COLORS -> 0 (+ important) - 5 (- important)
+:root {
+    --color-navbar: #155e75;
+    --color-sidebar: white;
+    --color-background: white;
+    --color-0: #1e1e1e;
+    --color-1: #252526;
+    --color-2: #3d3d41;
+    --color-3: #69696d;
+    --color-4: #a4a4a4;
+    --color-5: #c9c9c9;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-navbar: #2C2C2C;
+        --color-sidebar: #252525;
+        --color-background: #1C1C1C;
+        --color-0: #c9c9c9;
+        --color-1: #a4a4a4;
+        --color-2: #69696d;
+        --color-3: #3d3d41;
+        --color-4: #252526;
+        --color-5: #1e1e1e;
+    }
+}
