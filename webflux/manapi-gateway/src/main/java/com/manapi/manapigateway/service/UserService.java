@@ -26,7 +26,7 @@ import com.manapi.manapigateway.jwt.PrincipalUser;
 import com.manapi.manapigateway.jwt.JwtDto;
 
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Service
 public class UserService {

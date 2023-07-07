@@ -13,7 +13,7 @@ import com.manapi.manapigateway.dto.user.UserCreateDto;
 import com.manapi.manapigateway.dto.user.UserLoginDto;
 import com.manapi.manapigateway.jwt.JwtDto;
 import com.manapi.manapigateway.service.UserService;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
