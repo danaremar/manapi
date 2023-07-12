@@ -8,7 +8,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;

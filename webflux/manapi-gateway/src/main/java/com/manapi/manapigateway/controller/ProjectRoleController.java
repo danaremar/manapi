@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.manapi.manapigateway.dto.project_role.ProjectRoleCreateDto;
 import com.manapi.manapigateway.dto.project_role.ProjectRoleUpdateDto;
-import com.manapi.manapigateway.exception.UnauthorizedException;
 import com.manapi.manapigateway.service.ProjectRoleService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,25 +32,25 @@ public class ProjectRoleController {
     ProjectRoleService projectRoleService;
 
     @PostMapping(value = "/")
-    public ResponseEntity<Object> createProjectRole(@RequestBody @Valid ProjectRoleCreateDto projectRoleCreateDto) throws UnauthorizedException {
+    public ResponseEntity<Object> createProjectRole(@RequestBody @Valid ProjectRoleCreateDto projectRoleCreateDto) {
         var p = projectRoleService.createRole(projectRoleCreateDto);
         return new ResponseEntity<>(p, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{projectRoleId}")
-    public ResponseEntity<Object> updateProjectRole(@RequestBody @Valid ProjectRoleUpdateDto projectRoleUpdateDto, @PathVariable String projectRoleId) throws UnauthorizedException {
+    public ResponseEntity<Object> updateProjectRole(@RequestBody @Valid ProjectRoleUpdateDto projectRoleUpdateDto, @PathVariable String projectRoleId) {
         var p = projectRoleService.updateRole(projectRoleUpdateDto, projectRoleId);
         return new ResponseEntity<>(p, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{projectRoleId}/accept")
-    public ResponseEntity<Object> acceptProjectRole(@PathVariable String projectRoleId) throws UnauthorizedException {
+    public ResponseEntity<Object> acceptProjectRole(@PathVariable String projectRoleId) {
         var p = projectRoleService.acceptProjectRole(projectRoleId);
         return new ResponseEntity<>(p, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{projectRoleId}/decline")
-    public ResponseEntity<Object> declineProjectRole(@PathVariable String projectRoleId) throws UnauthorizedException {
+    public ResponseEntity<Object> declineProjectRole(@PathVariable String projectRoleId) {
         var p = projectRoleService.deleteProjectRole(projectRoleId);
         return new ResponseEntity<>(p, HttpStatus.OK);
     }

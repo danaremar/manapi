@@ -1,12 +1,8 @@
 package com.manapi.manapiproject.model.sprint;
 
 import java.util.Date;
-import java.util.List;
-
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

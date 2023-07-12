@@ -1,7 +1,6 @@
 package com.manapi.manapiproject.config;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 
 import jakarta.servlet.FilterChain;
@@ -14,8 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
