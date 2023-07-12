@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
@@ -32,15 +31,14 @@ public class ManapiGatewayApplication {
 						.addResourceLocations("file:" + imageUrl);
 			}
 
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-
-						// WEB RESTRICTED
-						.allowedOrigins("http://localhost:4200", "http://localhost:8080", "https://danaremar.github.io",
-								"https://web-danaremar.cloud.okteto.net");
-
-			}
+			// @Override
+			// public void addCorsMappings(CorsRegistry registry) {
+			// 	registry.addMapping("/**")
+			// 			.allowedOrigins("http://localhost:4200", "http://localhost:8080", "https://danaremar.github.io",
+			// 					"https://web-danaremar.cloud.okteto.net")
+			// 			.allowedMethods("GET", "POST", "PUT", "DELETE")
+			// 			.allowedHeaders("*");
+			// }
 		};
 	}
 

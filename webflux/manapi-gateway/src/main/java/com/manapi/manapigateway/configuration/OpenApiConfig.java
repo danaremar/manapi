@@ -1,11 +1,7 @@
 package com.manapi.manapigateway.configuration;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.cloud.gateway.route.Route;
-import org.springframework.cloud.gateway.route.RouteDefinition;
-import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

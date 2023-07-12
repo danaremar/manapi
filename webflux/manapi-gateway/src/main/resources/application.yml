@@ -27,13 +27,6 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-    # urls:
-    # - name: Project service
-    #   url: http://localhost:8081/swagger-ui.html
-  # api-docs:
-  #   enabled: true
-  #   groups:
-  #     enabled: true
 manapi:
   frontend:
     url: '${MANAPI_FRONTEND_URL}'
