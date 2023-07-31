@@ -1,7 +1,61 @@
 nav {
     background-color: var(--color-navbar) !important;
+    height: var(--navbar-size) !important;
 }
 
-.nav-link, .navbar-brand {
-    color: var(--color-0) !important;
+.nav-link,
+.navbar-brand,
+.user-name,
+.bi-nav,
+select {
+    color: white !important;
+}
+
+select {
+    border-radius: 50px;
+    background: var(--color-navbar) !important;
+    border-color: white;
+    min-width: 175px !important;
+    font-size: 14px;
+}
+
+.user-img {
+    height: 32px;
+    border-radius: 50px;
+}
+
+.bi {
+    cursor: pointer !important;
+}
+
+.sidebar {
+    width: var(--sidebar-size);
+    height: 100vh;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    position: fixed;
+    background-color: var(--color-sidebar);
+    padding-top: var(--navbar-size);
+    // padding-top: 60px;
+}
+
+.btn-toggle {
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+    padding-left: 0.8rem;
+    padding-right: 0.5rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+    transition: all 0.3s ease;
+    border-radius: 15px;
+}
+
+// :host-context([data-bs-theme="light"]) .btn-toggle {
+//     color: var(--color-navbar);
+// }
+
+.btn-toggle:hover {
+    background-color: var(--color-navbar);
+    color: white !important;
 }

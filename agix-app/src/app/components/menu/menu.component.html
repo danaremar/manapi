@@ -1,21 +1,82 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Docs</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Upgrade</a>
-          </li>
-        </ul>
-      </div>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">AGIX</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse">
+
+      <!-- project selector -->
+      <select name="project" id="project" class="mx-2 py-1 px-2">
+        <option value="1">Project: Manapi</option>
+        <option value="1">Project: Manapi 2</option>
+      </select>
+
+
+      <!-- sprint selector -->
+      <select name="sprint" id="sprint" class="mx-2 py-1 px-2">
+        <option value="1">Sprint: #3 develop</option>
+      </select>
+
     </div>
-  </nav>
+
+    <!-- last part -->
+    <div class="d-flex">
+
+      <!-- user image -->
+      <div class="my-auto">
+        <img class="user-img" src="{{imageUrl}}" alt="user photo">
+      </div>
+
+      <!-- username -->
+      <div class="user-name my-auto ms-2">
+        @{{username}}
+      </div>
+
+      <!-- theme swicth icon -->
+      <a class="ms-4 my-auto" (click)="switchTheme()">
+        <em class="bi bi-nav bi-theme" style="font-size: 20px;"></em>
+      </a>
+
+      <!-- logout icon -->
+      <a class="ms-3">
+        <em class="bi bi-nav bi-power" style="font-size: 20px;"></em>
+      </a>
+
+    </div>
+
+  </div>
+</nav>
+
+<aside class="sidebar flex-shrink-0 overflow-auto">
+  <ul class="list-unstyled ps-0">
+
+    <!-- <li *ngFor="let group of menuGroups; let i=index" class="mb-1">
+      
+    </li> -->
+
+    <li *ngFor="let group of menuGroups; let i=index" class="mt-2">
+
+      <!-- GROUP -->
+      <div class="d-flex btn-toggle" data-bs-toggle="collapse" [attr.data-bs-target]="'#dropdown-menu-' + i">
+        <em sidebar-toggle-item="" class="bi {{group.icon}} bi-sidebar my-auto" style="font-size: 20px;"></em>
+        <span class="my-auto mx-3 flex-grow-1" style="font-size: 19px;">{{group.name}}</span>
+        <em *ngIf="group.features!=null" class="bi-chevron-down dropdown-chevron my-auto"></em>
+      </div>
+
+      <!-- CHILDRENS -->
+      <ul [id]="'dropdown-menu-' + i" class="collapse">
+        <li *ngFor="let feature of group.features; let j=index" class="list-unstyled">
+          <div [routerLink]="[feature.url]" class="btn-toggle ms-3" style="font-size: 16px;">
+            {{feature.name}}
+          </div>
+        </li>
+      </ul>
+
+    </li>
+
+  </ul>
+</aside>

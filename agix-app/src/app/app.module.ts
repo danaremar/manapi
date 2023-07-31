@@ -8,12 +8,14 @@ import { MenuComponent } from './components/menu/menu.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InterceptorService } from './services/authentication/interceptor.service';
+import { ModalComponent } from './components/aux/modal/modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
-    AuthComponent
+    AuthComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,

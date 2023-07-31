@@ -2,9 +2,14 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
+
+  // JIT (Just-In-Time)
+  mode: 'jit',
+
   content: [
     "./src/**/*.{html,ts}",
   ],
+  
   theme: {
     extend: {},
     colors: {
